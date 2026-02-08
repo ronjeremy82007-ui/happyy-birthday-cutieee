@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story ♾️</title>
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            background-color: #fff0f3; /* Soft Pink Background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            color: #4a4a4a;
+        }
+
+        /* --- BACKGROUND HEART ANIMATION (Fixed) --- */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Puts animation behind the text */
+            opacity: 0.5; /* Makes it subtle so text is readable */
+        }
+
+        /* --- TIMELINE CONTAINER --- */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border-bottom: 2px solid #d6336c;
+        }
+
+        .header h1 {
+            color: #d6336c;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* The Vertical Line */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #d6336c;
+            top: 0;
+            bottom: 0;
+            left: 50%; /* Center the line */
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+
+        /* Timeline Cards */
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            box-sizing: border-box;
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(20px);
+            animation: popIn 0.6s ease-out forwards;
+        }
+
+        .container.left { left: 0; text-align: right; }
+        .container.right { left: 50%; text-align: left; }
+
+        /* The Dots on the Line */
+        .container::after {
+            content: '❤️';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -16px; /* Adjust for left side */
+            background-color: white;
+            border: 4px solid #d6336c;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container.right::after {
+            left: -16px; /* Adjust for right side */
+        }
+
+        /* Content Box */
+        .content {
+            padding: 20px;
+            background-color: white;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(214, 51, 108, 0.2);
+            border: 1px solid #ffdde1;
+        }
+
+        .content h2 {
+            margin: 0 0 10px 0;
+            color: #d6336c;
+            font-size: 1.2rem;
+        }
+
+        .date {
+            font-size: 0.85rem;
+            color: #888;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content p {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes popIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Stagger the animation for each item */
+        .container:nth-child(1) { animation-delay: 0.2s; }
+        .container:nth-child(2) { animation-delay: 0.4s; }
+        .container:nth-child(3) { animation-delay: 0.6s; }
+        .container:nth-child(4) { animation-delay: 0.8s; }
+        .container:nth-child(5) { animation-delay: 1.0s; }
+        .container:nth-child(6) { animation-delay: 1.2s; }
+        .container:nth-child(7) { animation-delay: 1.4s; }
+        .container:nth-child(8) { animation-delay: 1.6s; }
+
+        /* --- MOBILE FIXES --- */
+        @media screen and (max-width: 600px) {
+            .timeline::after { left: 31px; }
+            .container { width: 100%; padding-left: 70px; padding-right: 25px; text-align: left; }
+            .container.left, .container.right { left: 0; }
+            .container::after { left: 18px; } /* Dot position */
+            .container.left::after { left: 18px; }
+        }
+        
+        @keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+        .home-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 12px 30px;
+            background: #d6336c;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            text-align: center;
+            width: fit-content;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(214, 51, 108, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="testCanvas"></canvas>
+
+    <div class="header">
+        <h1>Our Journey ♾️</h1>
+        <p>From Inorbit to Forever</p>
+    </div>
+
+    <div class="timeline">
+        
+        <div class="container left">
+            <div class="content">
+                <span class="date">Nov 20, 2025</span>
+                <h2>The First Date 🌹</h2>
+                <p>Inorbit Mall & Reliance Store. The day it all started. Also, I remember a certain red outfit. ❤️😉</p>
+            </div>
+        </div>
+
+        <div class="container right">
+            <div class="content">
+                <span class="date">Dec 26, 2025</span>
+                <h2>Jogeshwari McD's 🍔</h2>
+                <p>First kiss on the cheek. By far the best date (until the next one). Pure magic.</p>
+            </div>
+        </div>
+
+        <div class="container left">
+            <div class="content">
+                <span class="date">Jan 7, 2026</span>
+                <h2>The Soft Launch 📸</h2>
+                <p>Inorbit had no food, Flavors of China was closed, so we hit Greens. You were mad about the 'red velvet' comment, but we made up. The Insta soft launch happened! 🚀</p>
+            </div>
+        </div>
+
+        <div class="container right">
+            <div class="content">
+                <span class="date">Jan 9, 2026</span>
+                <h2>Infinity Mall & The Moment 💏</h2>
+                <p>Our first real kiss. We sat saying nothing, just feeling the comfort. Dad scolded me later, but totally worth it. Win is a win.</p>
+            </div>
+        </div>
+
+        <div class="container left">
+            <div class="content">
+                <span class="date">Jan 14, 2026</span>
+                <h2>Toy Store & DMart 🧸</h2>
+                <p>Noodles, kisses, and that moment in the toy store holding my face. I realized I was going insane for you. 😭❤️</p>
+            </div>
+        </div>
+
+        <div class="container right">
+            <div class="content">
+                <span class="date">Jan 16, 2026</span>
+                <h2>The College Elevator 🛗</h2>
+                <p>Stayed at college, listened to our playlist. The elevator moment... let's just say my tongue remembers. 🥵🤐</p>
+            </div>
+        </div>
+
+        <div class="container left">
+            <div class="content">
+                <span class="date">Jan 28, 2026</span>
+                <h2>IEEE Techithon Day 1 🤖</h2>
+                <p>Gamezone lap sitting, cheese steamed momos, and realizing why people make out so much. Addicted to you. 🎀🎀</p>
+            </div>
+        </div>
+
+        <div class="container right">
+            <div class="content">
+                <span class="date">Jan 29, 2026</span>
+                <h2>Chess & The Swing ♟️</h2>
+                <p>Won 2 chess matches, lost 20 to you (gambling debt 💸). The park swing scared you, but we had Yakult and Ramen later. Perfect day.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <a href="index.html" class="home-btn">Back to Dashboard</a>
+
+    <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>
+    <script>
+        // Paste the exact script you provided, but I made it fill the screen
+        var canvas, stage, container, captureContainers, captureIndex;
+
+        function init() {
+            canvas = document.getElementById("testCanvas");
+            stage = new createjs.Stage(canvas);
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var w = canvas.width; var h = canvas.height;
+
+            container = new createjs.Container();
+            stage.addChild(container);
+            captureContainers = [];
+            captureIndex = 0;
+
+            for (var i = 0; i < 50; i++) { // Reduced count for mobile performance
+                var heart = new createjs.Shape();
+                heart.graphics.beginFill(createjs.Graphics.getHSL(Math.random() * 30 - 45, 100, 50 + Math.random() * 30));
+                heart.graphics.moveTo(0, -12).curveTo(1, -20, 8, -20).curveTo(16, -20, 16, -10).curveTo(16, 0, 0, 12);
+                heart.graphics.curveTo(-16, 0, -16, -10).curveTo(-16, -20, -8, -20).curveTo(-1, -20, 0, -12);
+                heart.y = -100;
+                container.addChild(heart);
+            }
+
+            for (i = 0; i < 100; i++) {
+                var captureContainer = new createjs.Container();
+                captureContainer.cache(0, 0, w, h);
+                captureContainers.push(captureContainer);
+            }
+
+            createjs.Ticker.timingMode = createjs.Ticker.RAF;
+            createjs.Ticker.on("tick", tick);
+        }
+
+        function tick(event) {
+            var w = canvas.width; var h = canvas.height; var l = container.numChildren;
+            captureIndex = (captureIndex + 1) % captureContainers.length;
+            stage.removeChildAt(0);
+            var captureContainer = captureContainers[captureIndex];
+            stage.addChildAt(captureContainer, 0);
+            captureContainer.addChild(container);
+
+            for (var i = 0; i < l; i++) {
+                var heart = container.getChildAt(i);
+                if (heart.y < -50) {
+                    heart._x = Math.random() * w;
+                    heart.y = h * (1 + Math.random()) + 50;
+                    heart.perX = (1 + Math.random() * 2) * h;
+                    heart.offX = Math.random() * h;
+                    heart.ampX = heart.perX * 0.1 * (0.15 + Math.random());
+                    heart.velY = -Math.random() * 2 - 1;
+                    heart.scale = Math.random() * 2 + 1;
+                    heart._rotation = Math.random() * 40 - 20;
+                    heart.alpha = Math.random() * 0.75 + 0.05;
+                    heart.compositeOperation = Math.random() < 0.33 ? "lighter" : "source-over";
+                }
+                var int = (heart.offX + heart.y) / heart.perX * Math.PI * 2;
+                heart.y += heart.velY * heart.scaleX / 2;
+                heart.x = heart._x + Math.cos(int) * heart.ampX;
+                heart.rotation = heart._rotation + Math.sin(int) * 30;
+            }
+            captureContainer.updateCache("source-over");
+            stage.update(event);
+        }
+
+        init();
+        
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stage.update();
+        });
+    </script>
+</body>
+</html>

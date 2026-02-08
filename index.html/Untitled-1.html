@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Eternal Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- AESTHETIC STYLING --- */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Soft Pink Gradient Background */
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #4a4a4a;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            /* Glassmorphism border */
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #d6336c; /* Deep Pink */
+            margin-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .terms-list {
+            text-align: left;
+            margin-bottom: 30px;
+            max-height: 350px;
+            overflow-y: auto; /* Scrollable if it gets too long */
+            padding-right: 10px;
+        }
+
+        .term-item {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .term-title {
+            font-weight: 600;
+            color: #d6336c;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Custom Scrollbar for style */
+        .terms-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .terms-list::-webkit-scrollbar-thumb {
+            background: #ffb7b2;
+            border-radius: 10px;
+        }
+
+        .btn {
+            background: #d6336c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(214, 51, 108, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(214, 51, 108, 0.4);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Simple animation for appearance */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        body {
+    transition: opacity 1s ease-in-out;
+    opacity: 1;
+}
+
+.fade-out {
+    opacity: 0;
+}
+/* Add this to Untitled-3.html CSS */
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+    animation: fadeInPage 1.2s ease-out;
+}
+
+
+#stamp-img.stamped {
+    opacity: 0.8 !important;
+    transform: scale(1) rotate(-15deg) !important;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Terms of Eternal Service</h1>
+        <span class="subtitle">Last Updated: Today & Forever</span>
+
+        <div class="terms-list">
+            <div class="term-item">
+                <span class="term-title">1. Scope of Devotion</span>
+                By entering this year, the User (You) agrees to accept unlimited love, attention, and annoying jokes from the Developer.
+                Priority level: Critical.
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">2. The "You're Right" Policy</span>
+                In any disagreement, the Developer acknowledges the User is statistically likely to be right.
+                If not, I agree to wait 10 mins before smiling about it.
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">3. Storage Capacity</span>
+                The User occupies 100% of the Developer’s heart storage. No other apps allowed. Reserved exclusively for your moods and dreams.
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">4. 24/7 Support</span>
+                Guaranteed availability for: Listening to rants, providing forehead kisses, and being your safe place when the world gets loud.
+            </div>
+            
+            <div class="term-item">
+                <span class="term-title">5. The Dispute Resolution Protocol</span>
+                No disagreement shall last longer than one minute idk. All
+                 arguments must be settled with a "hello kitty promise 🎀" and a reminder that "It's Us vs. The Problem," not "Me vs. You."
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">6. The "Closed Restaurant" Clause:</span>
+                In the event that a chosen date spot (like Inorbit) is closed, the Gulaam must immediately find a backup
+                "Schezwan Noodles" or "Korean Ramen" spot without complaining, even if the ramen "sucks".
+                
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">7. Mandatory Good Morning & Good Night Clause</span>
+                The Developer is required to send good morning and good night messages daily.
+                Failure may result in dramatic overthinking (not recommended).
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">8. Overthinking Insurance</span>
+                In case of unnecessary overthinking, the Developer must reassure the User with facts, affection, and at least
+                 one “I’m not going anywhere” statement.
+            </div>
+            
+            <div class="term-item">
+                <span class="term-title">9. Lifetime Warranty</span>
+                This relationship comes with a lifetime warranty. Cannot be voided by distance or bad days. No refunds. You're stuck with me.
+            </div>
+
+            <div class="term-item">
+                <span class="term-title">10. The "Forever & Always" Clause</span>
+                This contract is valid for the entirety of our lives and beyond. It’s not just a promise 
+                for this year, but for every year to come.
+            
+            
+                
+        </div>
+
+
+        <img id="stamp-img" src="imagee.png" style="position: absolute; bottom: 40px; right: 40px; width: 130px; opacity: 0;
+         transform: scale(5); pointer-events: none;size: 100px;">
+
+<audio id="stampSound">
+    <source src="https://www.soundjay.com/office/sounds/stapler-1.mp3" type="audio/mpeg">
+</audio>
+
+<button class="btn" onclick="applyStamp()">CHHAPPA! ✍️</button>
+    </div>
+
+    <script>
+
+function applyStamp() {
+    // 1. Fire the High-Energy Confetti
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { 
+            particleCount, 
+            origin: { x: Math.random(), y: Math.random() - 0.2 } 
+        }));
+    }, 250);
+
+    // 2. Start Fading Out after 1.5 seconds
+    setTimeout(() => {
+        document.body.classList.add('fade-out');
+    }, 1500);
+
+    // 3. Move to Home Page after 2.5 seconds
+    setTimeout(() => {
+        window.location.href = "index.html"; 
+    }, 2500);
+}
+
+
+
+
+    function applyStamp() {
+    const stamp = document.getElementById('stamp-img');
+    const sound = document.getElementById('stampSound');
+    
+    // 1. Play the 'Chhappa' sound
+    sound.play();
+    
+    // 2. Add the class to trigger the CSS animation
+    stamp.classList.add('stamped');
+    
+    // 3. Change button text for that extra win
+    event.target.innerText = "OFFICIALLY SEALED ❤️";
+    event.target.style.background = "#28a745";
+    // 1. Fire the High-Energy Confetti
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { 
+            particleCount, 
+            origin: { x: Math.random(), y: Math.random() - 0.2 } 
+        }));
+    }, 250);
+
+    // 2. Start Fading Out after 1.5 seconds
+    setTimeout(() => {
+        document.body.classList.add('fade-out');
+    }, 1500);
+
+    // 3. Move to Home Page after 2.5 seconds
+    setTimeout(() => {
+        window.location.href = "index.html"; 
+    }, 2500);
+}
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Birthday Perks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- AESTHETIC STYLING (Matches the previous page) --- */
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #4a4a4a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin: 0;
+        }
+
+        p {
+            font-size: 14px;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* --- COUPON CARD DESIGN --- */
+        .coupon-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .coupon-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        /* Dashed line effect to look like a ticket */
+        .coupon-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15px;
+            width: 2px;
+            height: 100%;
+            background: repeating-linear-gradient(transparent, transparent 5px, #e0e0e0 5px, #e0e0e0 10px);
+        }
+
+        .emoji-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            background: #fff0f3;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            box-shadow: inset 0 0 10px rgba(214, 51, 108, 0.1);
+        }
+
+        .coupon-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #d6336c;
+            margin-bottom: 5px;
+        }
+
+        .coupon-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .redeem-btn {
+            background: #d6336c;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .redeem-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(214, 51, 108, 0.3);
+        }
+
+        /* Style for when button is clicked */
+        .redeemed {
+            background: #ccc !important;
+            cursor: default;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .got-it {
+            background: #d6336c;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .got-it:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(214, 51, 108, 0.3);
+        }
+
+        
+        /* --- FINAL MESSAGE MODAL --- */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Darken background */
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 30px;
+    max-width: 350px;
+    width: 85%;
+    text-align: center;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+    font-family: 'Playfair Display', serif;
+    color: #d6336c;
+    margin-top: 0;
+}
+
+.modal-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.close-btn {
+    background: #d6336c;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+body {
+    transition: opacity 1s ease-in-out;
+    opacity: 1;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+/* Add this to Untitled-3.html CSS */
+@keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+    animation: fadeInPage 1.2s ease-out;
+}
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Exclusive Perks</h1>
+        <p>Valid for the Birthday Queen Only</p>
+    </header>
+
+    <div class="coupon-container">
+        
+        <div class="coupon-card">
+            <div class="emoji-icon">💅</div>
+            <div class="coupon-title">The "I'm Right" Pass</div>
+            <div class="coupon-desc">Use this to instantly win any argument. The Developer must accept defeat immediately.</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+
+        <div class="coupon-card">
+            <div class="emoji-icon">👩‍❤️‍👨</div>
+            <div class="coupon-title">The Class-to-Class Escort</div>
+            <div class="coupon-desc">Valid for one full day where I&apos;ll be waiting at your classroom door after every
+                 single lecture to walk you to your next one, no matter how far.</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+
+        <div class="coupon-card">
+            <div class="emoji-icon">🍷</div>
+            <div class="coupon-title">Deep Dive Session</div>
+            <div class="coupon-desc">Redeemable for one late-night video call where we both stay on mute
+                 and just do our own thing (studying/scrolling) so it feels like we&apos;re in the same room..</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+
+        <div class="coupon-card">
+            <div class="emoji-icon">🙅‍♀️</div>
+            <div class="coupon-title">The "Mental Health Day" Pass</div>
+            <div class="coupon-desc">Valid for those days when college feels like too much. We&apos;ll skip
+                 that one 'optional' lecture, find a quiet corner on campus, and just doom-scroll or watch a movie on one pair of AirPods.
+                  No productivity or guilt allowed.</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+        
+        <div class="coupon-card">
+            <div class="emoji-icon">👫</div>
+            <div class="coupon-title">The "Handwriting Substitute" Voucher</div>
+            <div class="coupon-desc">If your hand is tired or you&apos;re just over it, I&apos;ll write your ASS 😛😛, or finish that annoying 
+                diagram for you. I&apos;ll even try to mimic your handwriting.</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+
+        <div class="coupon-card">
+            <div class="emoji-icon">👫</div>
+            <div class="coupon-title">The "Endless Hand-Hold" Session </div>
+            <div class="coupon-desc">Good for one entire break period where I don't check my phone once and just focus 100% on you until the bell rings..</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+
+        <div class="coupon-card">
+            <div class="emoji-icon">💆‍♂️</div>
+            <div class="coupon-title">Princess Treatment</div>
+            <div class="coupon-desc">For the next 24 hours (of college), I&apos;m in charge of the logistics. I&apos;ll decide where we eat,
+                 carry your bags, and make sure your water bottle is never empty. You just focus on being the prettiest girl on campus.</div>
+            <button class="redeem-btn" onclick="redeem(this)">Redeem Coupon</button>
+        </div>
+
+        <div id="welcomeModal" class="modal-overlay" style="display: flex;">
+            <div class="modal-content" style="text-align: center; padding: 30px; border-radius: 20px;">
+                <h2 style="color: #d6336c;">Hey Malkin! 👑</h2>
+                <p>Once you redeem any one of the coupons, send a screenshot of the same to your gulaam and claim it.</p>
+                <button class="got-it" onclick="closeWelcome()">Got it!</button>
+            </div>
+        </div>
+        
+        <canvas id="canvas"></canvas>
+        <script>
+            const canvas = document.getElementById('canvas');
+            const button = document.getElementsByClassName('got-it')[0];
+            button.addEventListener('click', () => {
+                confetti({
+      particleCount: 100,
+      spread: 180,
+      origin: { x: 0.5, y: 0.5 },
+      shapes: ["heart"],
+      colors: ["#ff4081", "#f50057", "#d500f9"],
+      scalar: 1.5,
+      startVelocity: 30,
+      decay: 0.9,
+      gravity: 0.1,
+      ticks: 100,
+      zIndex: 999
+    });
+  });
+  
+        </script>
+    <script>
+
+function closeWelcome() {
+    document.getElementById('welcomeModal').style.display = 'none';
+}
+
+
+// This runs as soon as the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    // Check which coupons were already redeemed in the past
+    const savedRedemptions = JSON.parse(localStorage.getItem("redeemedCoupons")) || [];
+    
+    // Apply the "Redeemed" state to the buttons based on saved data
+    const buttons = document.querySelectorAll(".redeem-btn");
+    buttons.forEach((btn, index) => {
+        if (savedRedemptions.includes(index)) {
+            btn.innerText = "Redeemed ✅";
+            btn.classList.add("redeemed");
+            btn.disabled = true; // Makes it unclickable
+        }
+    });
+});
+
+function redeem(button) {
+    // Get all buttons to find the index of the one clicked
+    const buttons = Array.from(document.querySelectorAll(".redeem-btn"));
+    const index = buttons.indexOf(button);
+
+    if (button.innerText !== "Redeemed ✅") {
+        // 1. Update UI
+        button.innerText = "Redeemed ✅";
+        button.classList.add("redeemed");
+        button.disabled = true;
+
+        // 2. Save to localStorage
+        let savedRedemptions = JSON.parse(localStorage.getItem("redeemedCoupons")) || [];
+        if (!savedRedemptions.includes(index)) {
+            savedRedemptions.push(index);
+            localStorage.setItem("redeemedCoupons", JSON.stringify(savedRedemptions));
+        }
+
+        // 4. Check for Final Modal
+        const totalCoupons = buttons.length;
+        if (savedRedemptions.length === totalCoupons) {
+            setTimeout(() => {
+                document.getElementById('finalModal').style.display = 'flex';
+            }, 800);
+        }
+    }
+}
+
+function closeModal() {
+    document.getElementById('finalModal').style.display = 'none';
+}
+
+function closeModal() {
+    // 1. Fire the High-Energy Confetti
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+        if (timeLeft <= 0) return clearInterval(interval);
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { 
+            particleCount, 
+            origin: { x: Math.random(), y: Math.random() - 0.2 } 
+        }));
+    }, 250);
+
+    // 2. Start Fading Out after 1.5 seconds
+    setTimeout(() => {
+        document.body.classList.add('fade-out');
+    }, 1500);
+
+    // 3. Move to Home Page after 2.5 seconds
+    setTimeout(() => {
+        window.location.href = "index.html"; 
+    }, 2500);
+}
+
+</script>
+
+<div class="modal-overlay" id="finalModal">
+    <div class="modal-content">
+        <h2>Wait, before you go... 💌</h2>
+        <p>
+            I built this app because our time together at college is never enough. 
+            I want you to take a piece of "us" home with you. Every promise here is real. 
+            You're the best reality I've ever had. <br><br>
+            Happy Birthday, my girl. Now let's make these coupons happen.
+        </p>
+        <button class="close-btn" onclick="closeModal()">I Love You. Always.</button>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</body>
+</html>

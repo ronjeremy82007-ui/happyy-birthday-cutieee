@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>For My Queen 👑</title>
+    <style>
+        /* 2. Remove default margins and hide scrollbars */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevents scrolling */
+            background-color: #312; /* Matches your canvas background */
+            font-family: sans-serif;
+        }
+
+        canvas {
+            display: block; /* Removes tiny white bar at bottom */
+            background-color: #312;
+        }
+
+        /* 3. A nice Back Button so she isn't stuck here */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            backdrop-filter: blur(5px);
+            font-size: 14px;
+            z-index: 100; /* Ensures it sits on top of the hearts */
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← Home</a>
+
+    <div>
+        <canvas id="testCanvas"></canvas>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="https://code.createjs.com/1.0.0/easeljs.min.js"></script>
+    
+    <script>
+        var canvas;
+        var stage;
+        var container;
+        var captureContainers;
+        var captureIndex;
+        var text; // Define text globally so we can center it on resize
+
+        function init() {
+            canvas = document.getElementById("testCanvas");
+            stage = new createjs.Stage(canvas);
+            
+            // Set initial size
+            resizeCanvas();
+
+            container = new createjs.Container();
+            stage.addChild(container);
+
+            captureContainers = [];
+            captureIndex = 0;
+
+            // Create hearts
+            for (var i = 0; i < 100; i++) {
+                var heart = new createjs.Shape();
+                heart.graphics.beginFill(createjs.Graphics.getHSL(Math.random() * 30 - 45, 100, 50 + Math.random() * 30));
+                heart.graphics.moveTo(0, -12).curveTo(1, -20, 8, -20).curveTo(16, -20, 16, -10).curveTo(16, 0, 0, 12);
+                heart.graphics.curveTo(-16, 0, -16, -10).curveTo(-16, -20, -8, -20).curveTo(-1, -20, 0, -12);
+                heart.y = -100;
+
+                container.addChild(heart);
+            }
+
+            // Create Text
+            text = new createjs.Text("the longer I'm with you\nthe more I love you", "bold 24px Arial", "#d6336c"); // Changed color to pop against dark bg
+            text.textAlign = "center";
+            centerText(); // Function to center it
+            stage.addChild(text);
+
+            for (i = 0; i < 100; i++) {
+                var captureContainer = new createjs.Container();
+                captureContainer.cache(0, 0, canvas.width, canvas.height);
+                captureContainers.push(captureContainer);
+            }
+
+            createjs.Ticker.timingMode = createjs.Ticker.RAF;
+            createjs.Ticker.on("tick", tick);
+            
+            // Add Resize Listener for Mobile Rotation
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        // Helper to resize canvas and recenter text
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if(text) centerText();
+        }
+
+        function centerText() {
+            text.x = canvas.width / 2;
+            text.y = canvas.height / 2 - text.getMeasuredLineHeight();
+        }
+
+        function tick(event) {
+            var w = canvas.width;
+            var h = canvas.height;
+            var l = container.numChildren;
+
+            captureIndex = (captureIndex + 1) % captureContainers.length;
+            stage.removeChildAt(0);
+            var captureContainer = captureContainers[captureIndex];
+            stage.addChildAt(captureContainer, 0);
+            captureContainer.addChild(container);
+
+            for (var i = 0; i < l; i++) {
+                var heart = container.getChildAt(i);
+                if (heart.y < -50) {
+                    heart._x = Math.random() * w;
+                    heart.y = h * (1 + Math.random()) + 50;
+                    heart.perX = (1 + Math.random() * 2) * h;
+                    heart.offX = Math.random() * h;
+                    heart.ampX = heart.perX * 0.1 * (0.15 + Math.random());
+                    heart.velY = -Math.random() * 2 - 1;
+                    heart.scale = Math.random() * 2 + 1;
+                    heart._rotation = Math.random() * 40 - 20;
+                    heart.alpha = Math.random() * 0.75 + 0.05;
+                    heart.compositeOperation = Math.random() < 0.33 ? "lighter" : "source-over";
+                }
+                var int = (heart.offX + heart.y) / heart.perX * Math.PI * 2;
+                heart.y += heart.velY * heart.scaleX / 2;
+                heart.x = heart._x + Math.cos(int) * heart.ampX;
+                heart.rotation = heart._rotation + Math.sin(int) * 30;
+            }
+
+            captureContainer.updateCache("source-over");
+            stage.update(event);
+        }
+
+        init();
+    </script>
+</body>
+</html>

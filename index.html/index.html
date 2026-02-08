@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You, My Forever 💞</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        
+    @keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #fffafa; /* Very soft rose white */
+            font-family: 'Poppins', sans-serif;
+            color: #4a4a4a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- HEADER SECTION --- */
+        .header {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070&auto=format&fit=crop'); /* Replace with a pic of her! */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 40px 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- DASHBOARD GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            width: 90%;
+            max-width: 400px;
+            margin-top: -30px; /* Pulls grid up over the header */
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+                box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+                cursor: pointer;
+        }
+
+        .card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .card span {
+            font-weight: 600;
+            font-size: 14px;
+            color: #d6336c;
+        }
+
+        /* --- LOVE NOTE SECTION --- */
+        .daily-quote {
+            width: 90%;
+            max-width: 360px;
+            margin: auto auto;
+            text-align: center;
+            font-style: italic;
+            color: #888;
+            font-size: 14px;
+            line-height: 1.6;
+            display: block ;
+        }
+
+        .footer {
+            margin-top: 20px;
+            padding-bottom: 20px;
+            font-size: 12px;
+            color: #bbb;
+        }
+        .grid > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+        .card:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .main-footer {
+    width: 100%;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.birthday-note {
+    font-style: italic;
+    color: #888;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+.hidden-secret {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1.5s ease-out;
+    color: pink;
+}
+
+.hidden-secret.reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.designer-credit {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #bbb;
+    font-weight: normal;
+}
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome, Birthday Queen</h1>
+        <div class="status-badge">Status: Most Loved Person on Earth</div>
+    </div>
+
+    <div class="grid">
+        <a href="Untitled-1.html" class="card">
+            <i>📜</i>
+            <span>The Contract</span>
+        </a>
+
+        <a href="Untitled-2.html" class="card">
+            <i>🎟️</i>
+            <span>Your Perks</span>
+        </a>
+
+        <a href="Untitled-4.html" class="card">
+            <i>😝</i>
+            <span>Calander</span>
+        </a>
+
+        <a href="#" class="card" onclick="showDailyLove()">
+          <i>💌</i>
+            <span>Daily Love</span>
+        </a>
+
+        <div class="card" onclick="window.location.href='Untitled-6.html'">
+    <div class="card-icon" style="font-size: x-large;">💌</div>
+    <h3 style="font-size: 16px; margin: 5px 0; color: #d6336c; text-align: center;">Open When...</h3>
+    <p style="font-size: small; text-align: center;">A message for your heart. ✨</p>
+</div>
+
+        <div style="height: fit-content;" class="card" onclick="window.location.href='Untitled-5.html'">
+    <div class="card-icon" style="font-size: x-large;">💝</div>
+    <h3 style="font-size: 16px; margin: 5px 0; color: #d6336c; text-align: center;">My Heart</h3>
+    <p style="font-size: small; text-align: center;">A little magic for you ✨</p>
+</div>
+
+<div class="modal-overlay" id="loveModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(5px); z-index:2000; justify-content:center; align-items:center;">
+    <div style="background:white; padding:30px; border-radius:30px; max-width:300px; width:80%; text-align:center;">
+        <div id="loveEmoji" style="font-size:40px; margin-bottom:10px;">💝</div>
+        <h2 id="loveTitle" style="font-family:'Playfair Display', serif; color:#d6336c; margin-top:0;">Today's Note</h2>
+        <p id="dailyMessage" style="font-size:15px; line-height:1.6; color:#555;"></p>
+        <button onclick="closeDailyModal()" style="background:#d6336c; color:white; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; width:100%; font-weight:600;">Close</button>
+    </div>
+</div>
+
+    <div id="secret-reveal" class="hidden-secret" style="width: 380px; text-align: center;">
+        <p>I built this app because a regular text just isn't enough to show how much you mean to me. Happy Birthday, my girl
+        <br> <b style="font-family: 'Playfair Display', serif; margin-top: 10px;
+        color: #d6336c;">
+             P.S. I'm still counting down the seconds until our next date.</b>   ⏳❤️</p>
+        <span class="designer-credit">Designed with ❤️ by GAWAR 😭 🎀</span>
+    </div>
+</footer>
+
+    <script>
+const loveNotes = [
+    "You're the first thing I think about when I wake up and the last thing on my mind before I sleep.",
+    "Just a reminder: You are doing so well at college. I'm so proud of how hard you work.",
+    "Your smile is my favorite thing in the world. I hope I get to see it a lot today.",
+    "I'm so lucky that I get to walk through those college halls with you. You're my favorite view.",
+    "No matter how stressful today gets, remember that I'm your safe place. I've got you.",
+    "You make even the most boring lectures feel like an adventure just because you're there.",
+    "I love the way you look when you're focused. You're incredibly beautiful when you're driven.",
+    "Thank you for being my person. I wouldn't want to do this life with anyone else."
+];
+
+function showDailyLove() {
+    const today = new Date().toDateString();
+    const lastOpened = localStorage.getItem("lastOpenedLove");
+    
+    const modalTitle = document.getElementById("loveTitle");
+    const modalEmoji = document.getElementById("loveEmoji");
+    const messageElement = document.getElementById('dailyMessage');
+
+    if (lastOpened === today) {
+        modalEmoji.innerText = "⏳";
+        modalTitle.innerText = "Patience, Queen!";
+        messageElement.innerText = "Oops! No peeking twice. You've already used your daily dose of love. Come back tomorrow for a new note! ✨";
+    } else {
+        let hash = 0;
+        for (let i = 0; i < today.length; i++) {
+            hash = today.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const index = Math.abs(hash % loveNotes.length);
+        
+        modalEmoji.innerText = "💝";
+        modalTitle.innerText = "Today's Note";
+        messageElement.innerText = loveNotes[index];
+        localStorage.setItem("lastOpenedLove", today);
+    }
+
+    document.getElementById('loveModal').style.display = 'flex';
+}
+
+// Updated this function name to match the button
+function closeDailyModal() {
+    document.getElementById('loveModal').style.display = 'none';
+}
+
+window.onscroll = function() {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 10) {
+        document.getElementById('secret-reveal').classList.add('reveal');
+    }
+};
+
+    </script> 
+
+</body>
+</html>
