@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Pop - Calm Relief Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #320720 0%, #cb14a3 50%, #e21c89 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(180deg, #4a2c5e 0%, #2d5a6f 50%, #3a4d5c 100%);
+            transition: filter 0.3s ease;
+        }
+
+        .container.blurred {
+            filter: blur(10px);
+            pointer-events: none;
+        }
+
+        .startup-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease;
+        }
+
+        .startup-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .startup-modal {
+            background: rgba(255, 255, 255, 0.96);
+            color: #5f214a;
+            padding: 1.4rem 1.6rem;
+            border-radius: 16px;
+            min-width: 250px;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .startup-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .enter-button {
+            border: none;
+            border-radius: 999px;
+            padding: 0.7rem 1.6rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #ff4d94, #c0178c);
+            cursor: pointer;
+        }
+
+        .enter-button:hover {
+            filter: brightness(1.06);
+        }
+
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: inset -2px -2px 5px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .bubble:active {
+            transform: scale(0.95);
+        }
+
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 25%;
+            height: 25%;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .sparkle-star {
+            position: absolute;
+            color: #FFD700;
+            font-size: 1.5rem;
+            animation: sparkleFloat 1s ease-out forwards;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6b9d;
+            font-size: 1.5rem;
+            animation: heartFloat 1.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.3rem;
+        }
+
+        .confetti-piece {
+            animation: confettiFall 2.5s ease-out forwards;
+            transform-origin: center;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) rotateZ(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) rotateZ(720deg) scale(0);
+            }
+        }
+
+        @keyframes sparkleFloat {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        @keyframes heartFloat {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        @keyframes popBubble {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .bubble-pop {
+            animation: popBubble 0.4s ease-out forwards;
+        }
+
+        .message-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 80%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: messageAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            pointer-events: none;
+            font-size: 1.1rem;
+            color: #4a4a4a;
+            line-height: 1.6;
+        }
+
+        .message-popup.golden {
+            background: linear-gradient(135deg, #FFE5B4 0%, #FFF8DC 100%);
+            font-size: 1.3rem;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        @keyframes messageAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8) rotateZ(-10deg);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) rotateZ(0deg);
+            }
+        }
+
+        @keyframes messageAppearGolden {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotateZ(-20deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.05) rotateZ(5deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) rotateZ(0deg);
+            }
+        }
+
+        .message-popup.golden {
+            animation: messageAppearGolden 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(255, 107, 157, 0.7);
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            z-index: 10;
+        }
+
+        .stats {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: rgba(100, 150, 180, 0.8);
+            font-size: 1rem;
+        }
+
+        .counter {
+            font-size: 2rem;
+            font-weight: bold;
+            color: rgba(255, 107, 157, 0.9);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.2rem;
+                top: 15px;
+            }
+
+            .stats {
+                top: 65px;
+                font-size: 0.9rem;
+            }
+
+            .message-popup {
+                padding: 1.5rem;
+                font-size: 1rem;
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1rem;
+                top: 10px;
+            }
+
+            .stats {
+                top: 50px;
+                font-size: 0.8rem;
+            }
+
+            .message-popup {
+                padding: 1.2rem;
+                font-size: 0.95rem;
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container blurred" id="mainContainer">
+        <div class="game-area" id="gameArea">
+            <div class="title">✨ Calm Bubble Pop ✨</div>
+            <div class="stats">
+                <div>Bubbles Popped: <span class="counter" id="counter">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="startup-overlay" id="startupOverlay">
+        <div class="startup-modal">
+            <div class="startup-title">game timee!!</div>
+            <button class="enter-button" id="enterButton">Enter!</button>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const mainContainer = document.getElementById('mainContainer');
+        const gameArea = document.getElementById('gameArea');
+        const counter = document.getElementById('counter');
+        const startupOverlay = document.getElementById('startupOverlay');
+        const enterButton = document.getElementById('enterButton');
+        const backgroundMusicElement = document.getElementById('backgroundMusic');
+        let bubblesPopped = 0;
+        let gameStarted = false;
+        const GOLDEN_MESSAGE_DURATION_MS = 12000;
+
+        // Positive messages for regular bubbles
+        const positiveMessages = [
+            "You're doing great! 💚",
+            "Keep going, you've got this! 💪",
+            "You deserve happiness ✨",
+            "Take a deep breath. You're safe. 🌸",
+            "You are stronger than you think 💝",
+            "Every moment is a fresh start 🌟",
+            "You are worthy of love and kindness 💗",
+            "This feeling will pass 🦋",
+            "Be kind to yourself 💕",
+            "You matter more than you know 🌈",
+            "Peace is within you 🍃",
+            "Breathe. You're going to be okay 💙",
+            "Your struggles don't define you ✨",
+            "You're braver than you believe 🌙",
+            "Celebrate the small wins 🎉",
+            "You are enough, right now 💛",
+            "Growth happens at your own pace 🌱",
+            "It's okay to rest 🌺",
+            "Your presence matters 🦢",
+            "Choose kindness, starting with yourself 🌼"
+        ];
+
+        // Single message for golden bubbles
+        const goldenMessage = "I love you";
+
+        // Pastel colors for bubbles
+        const pastelColors = [
+            '#FFB6D9', // Pink
+            '#B4D7F8', // Light Blue
+            '#FFE5B4', // Peach
+            '#D4F0D4', // Mint Green
+            '#E8D5F2', // Lavender
+            '#FFF5BA', // Pale Yellow
+            '#FFD4E5', // Rose
+            '#D4E8FF', // Sky Blue
+            '#E5F0D4', // Lime Green
+            '#F0D4FF'  // Light Purple
+        ];
+
+        // Create audio context for sound
+        let audioContext;
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        function playPopSound(isGolden = false) {
+            try {
+                initAudio();
+                const now = audioContext.currentTime;
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+
+                if (isGolden) {
+                    // Joyful sound for golden bubbles
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else {
+                    // Soft pop sound for regular bubbles
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                }
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+
+            const size = Math.random() * 40 + 40; // 40-80px
+            const startX = Math.random() * (window.innerWidth - size);
+            const startY = window.innerHeight + size;
+            const isDuration = Math.random() < 0.05; // 5% chance of golden bubble
+
+            const color = isDuration ? '#FFD700' : pastelColors[Math.floor(Math.random() * pastelColors.length)];
+
+            bubble.style.width = size + 'px';
+            bubble.style.height = size + 'px';
+            bubble.style.left = startX + 'px';
+            bubble.style.top = startY + 'px';
+            bubble.style.background = color;
+            bubble.style.boxShadow = `inset -2px -2px 5px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1)`;
+
+            if (isDuration) {
+                bubble.classList.add('golden');
+                bubble.style.boxShadow = `inset -2px -2px 5px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(255, 215, 0, 0.4)`;
+            }
+
+            bubble.addEventListener('click', () => popBubble(bubble, isDuration));
+            bubble.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                popBubble(bubble, isDuration);
+            });
+
+            gameArea.appendChild(bubble);
+
+            // Animate bubble upward
+            let y = startY;
+            const speed = Math.random() * 1.5 + 0.5; // 0.5-2 px per frame
+            const drift = (Math.random() - 0.5) * 0.5; // Gentle side-to-side movement
+            let x = startX;
+            let time = 0;
+
+            function animateBubble() {
+                y -= speed;
+                time += 0.016;
+                x += Math.sin(time) * drift;
+
+                bubble.style.top = y + 'px';
+                bubble.style.left = x + 'px';
+
+                if (y > -size && bubble.parentNode) {
+                    requestAnimationFrame(animateBubble);
+                } else if (bubble.parentNode) {
+                    bubble.remove();
+                }
+            }
+            animateBubble();
+        }
+
+        function popBubble(bubble, isGolden) {
+            const bubbleRect = bubble.getBoundingClientRect();
+            const gameRect = gameArea.getBoundingClientRect();
+            const size = bubbleRect.width;
+            const x = bubbleRect.left - gameRect.left;
+            const y = bubbleRect.top - gameRect.top;
+
+            bubble.classList.add('bubble-pop');
+            playPopSound(isGolden);
+
+            // Create sparkles and hearts
+            const particleCount = isGolden ? 15 : 10;
+            for (let i = 0; i < particleCount; i++) {
+                if (Math.random() > 0.3) {
+                    createSparkle(x + size / 2, y + size / 2);
+                } else {
+                    createHeart(x + size / 2, y + size / 2);
+                }
+            }
+
+            // Create confetti for golden bubbles
+            if (isGolden) {
+                for (let i = 0; i < 20; i++) {
+                    createConfetti(x + size / 2, y + size / 2);
+                }
+            }
+
+            // Show message only for golden bubbles
+            if (isGolden) {
+                showMessage(goldenMessage, isGolden);
+            }
+
+            bubblesPopped++;
+            counter.textContent = bubblesPopped;
+
+            setTimeout(() => bubble.remove(), 400);
+        }
+
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle-star';
+            sparkle.textContent = '✨';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+
+            gameArea.appendChild(sparkle);
+
+            const angle = (Math.random() * Math.PI * 2);
+            const velocity = Math.random() * 100 + 50;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity - 50;
+
+            sparkle.style.setProperty('--tx', tx + 'px');
+            sparkle.style.setProperty('--ty', ty + 'px');
+
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+
+        function createHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '❤️';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            gameArea.appendChild(heart);
+
+            const angle = (Math.random() * Math.PI * 2);
+            const velocity = Math.random() * 120 + 60;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity - 80;
+
+            heart.style.setProperty('--tx', tx + 'px');
+            heart.style.setProperty('--ty', ty + 'px');
+
+            setTimeout(() => heart.remove(), 1500);
+        }
+
+        function createConfetti(x, y) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti confetti-piece';
+            
+            const confettiSymbols = ['🎉', '✨', '💫', '⭐', '🌟', '💖', '🎊', '🦋'];
+            confetti.textContent = confettiSymbols[Math.floor(Math.random() * confettiSymbols.length)];
+            confetti.style.left = x + 'px';
+            confetti.style.top = y + 'px';
+
+            gameArea.appendChild(confetti);
+
+            const angle = (Math.random() * Math.PI * 2);
+            const velocity = Math.random() * 180 + 100;
+            const tx = Math.cos(angle) * velocity;
+            const ty = Math.sin(angle) * velocity - 120;
+
+            confetti.style.setProperty('--tx', tx + 'px');
+            confetti.style.setProperty('--ty', ty + 'px');
+
+            setTimeout(() => confetti.remove(), 2500);
+        }
+
+        function showMessage(text, isGolden) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-popup' + (isGolden ? ' golden' : '');
+            messageDiv.textContent = text;
+
+            document.body.appendChild(messageDiv);
+
+            setTimeout(() => messageDiv.remove(), isGolden ? GOLDEN_MESSAGE_DURATION_MS : 7000);
+        }
+
+        // Create bubbles at intervals
+        function startGame() {
+            if (gameStarted) {
+                return;
+            }
+            gameStarted = true;
+            setInterval(createBubble, 800);
+        }
+
+        function startBackgroundMusic() {
+            if (!backgroundMusicElement) {
+                return;
+            }
+            backgroundMusicElement.volume = 0.5;
+            const playAttempt = backgroundMusicElement.play();
+            if (playAttempt && typeof playAttempt.catch === 'function') {
+                playAttempt.catch((error) => {
+                    console.log('Could not play background music:', error);
+                });
+            }
+        }
+
+        function enterGame() {
+            mainContainer.classList.remove('blurred');
+            startupOverlay.classList.add('hidden');
+            setTimeout(() => startupOverlay.remove(), 350);
+            startGame();
+            startBackgroundMusic();
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            // Bubbles continue to float naturally with percentage positioning
+        });
+
+        // Start after user enters from the popup
+        enterButton.addEventListener('click', enterGame);
+
+    </script>
+</body>
+</html>
