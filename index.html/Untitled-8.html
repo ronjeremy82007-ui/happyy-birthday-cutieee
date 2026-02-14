@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>..........</title>
+</head>
+    <h1 class="msg">
+        This page is under construction, please check back later.
+    </h1>
+<body>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+
+        .msg {
+            font-size: 30px;
+            color: #555;
+        }
+        .msg:hover {
+            color: #007BFF;
+        }
+        .msg:before {
+            content: "🚧 ";
+        }
+        .msg:after {
+            content: " 🚧";
+        }
+        .msg {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { color: #555; }
+            50% { color: #007BFF; }
+            100% { color: #555; }
+        }
+        .msg {
+            transition: color 0.3s ease;
+        }
+        .msg:hover {
+            color: #007BFF;
+        }
+
+
+    </style>
+</html>
