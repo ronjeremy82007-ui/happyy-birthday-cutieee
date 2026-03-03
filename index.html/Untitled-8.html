@@ -2,51 +2,367 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>..........</title>
-</head>
-    <h1 class="msg">
-        This page is under construction, please check back later.
-    </h1>
-<body>
+    <title>My Bank</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
         }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
         h1 {
+            text-align: center;
             color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
         }
 
-        .msg {
-            font-size: 30px;
-            color: #555;
-        }
-        .msg:hover {
-            color: #007BFF;
-        }
-        .msg:before {
-            content: "🚧 ";
-        }
-        .msg:after {
-            content: " 🚧";
-        }
-        .msg {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { color: #555; }
-            50% { color: #007BFF; }
-            100% { color: #555; }
-        }
-        .msg {
-            transition: color 0.3s ease;
-        }
-        .msg:hover {
-            color: #007BFF;
+        .balance-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
         }
 
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
 
+        .balance-amount {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-subtract {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-subtract:hover {
+            background: #da190b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        }
+
+        .btn-clear {
+            grid-column: 1 / -1;
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #e68900;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .transactions-section {
+            margin-top: 30px;
+        }
+
+        .transactions-section h2 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 0;
+        }
+
+        .transaction-item {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-note {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .transaction-add {
+            color: #4caf50;
+        }
+
+        .transaction-subtract {
+            color: #f44336;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+        }
+
+        .btn-delete-transaction {
+            background: #ff6b6b;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .btn-delete-transaction:hover {
+            background: #ff5252;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
     </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 My Bank</h1>
+
+        <div class="balance-section">
+            <div class="balance-label">Current Balance</div>
+            <div class="balance-amount">$<span id="balance">0.00</span></div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label for="amount">Amount ($)</label>
+                <input type="number" id="amount" placeholder="Enter amount" step="0.01" min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="note">Note (optional)</label>
+                <input type="text" id="note" placeholder="Add a note...">
+            </div>
+
+            <div class="button-group">
+                <button class="btn-add" onclick="addMoney()">➕ Add Money</button>
+                <button class="btn-subtract" onclick="subtractMoney()">➖ Spend Money</button>
+                <button class="btn-clear" onclick="clearForm()">Clear</button>
+            </div>
+        </div>
+
+        <div class="transactions-section">
+            <h2>Transaction History</h2>
+            <div class="transaction-list" id="transactionList">
+                <div class="empty-message">No transactions yet. Start by adding or spending money!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize from localStorage
+        let transactions = JSON.parse(localStorage.getItem('bankTransactions')) || [];
+
+        function updateBalance() {
+            const balance = transactions.reduce((sum, t) => sum + t.amount, 0);
+            document.getElementById('balance').textContent = balance.toFixed(2);
+            localStorage.setItem('bankTransactions', JSON.stringify(transactions));
+        }
+
+        function addMoney() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const note = document.getElementById('note').value || 'Added money';
+
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'add',
+                amount: amount,
+                note: note,
+                date: new Date().toLocaleString()
+            });
+
+            updateBalance();
+            renderTransactions();
+            clearForm();
+        }
+
+        function subtractMoney() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const note = document.getElementById('note').value || 'Spent money';
+
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            const currentBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
+            if (currentBalance < amount) {
+                alert(`Insufficient balance! Current balance: $${currentBalance.toFixed(2)}`);
+                return;
+            }
+
+            transactions.unshift({
+                id: Date.now(),
+                type: 'subtract',
+                amount: -amount,
+                note: note,
+                date: new Date().toLocaleString()
+            });
+
+            updateBalance();
+            renderTransactions();
+            clearForm();
+        }
+
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            updateBalance();
+            renderTransactions();
+        }
+
+        function renderTransactions() {
+            const listContainer = document.getElementById('transactionList');
+
+            if (transactions.length === 0) {
+                listContainer.innerHTML = '<div class="empty-message">No transactions yet. Start by adding or spending money!</div>';
+                return;
+            }
+
+            listContainer.innerHTML = transactions.map(t => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-note">${t.note}</div>
+                        <small style="color: #999;">${t.date}</small>
+                    </div>
+                    <div>
+                        <span class="transaction-amount ${t.type === 'add' ? 'transaction-add' : 'transaction-subtract'}">
+                            ${t.type === 'add' ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+                        </span>
+                        <button class="btn-delete-transaction" onclick="deleteTransaction(${t.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function clearForm() {
+            document.getElementById('amount').value = '';
+            document.getElementById('note').value = '';
+            document.getElementById('amount').focus();
+        }
+
+        // Initial render
+        updateBalance();
+        renderTransactions();
+    </script>
+</body>
 </html>
