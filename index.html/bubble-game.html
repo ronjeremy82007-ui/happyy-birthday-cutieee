@@ -353,6 +353,7 @@
         const backgroundMusicElement = document.getElementById('backgroundMusic');
         let bubblesPopped = 0;
         let gameStarted = false;
+        let gameStartTime = null;
         const GOLDEN_MESSAGE_DURATION_MS = 12000;
 
         // Positive messages for regular bubbles
@@ -475,7 +476,9 @@
 
             // Animate bubble upward
             let y = startY;
-            const speed = Math.random() * 1.5 + 0.5; // 0.5-2 px per frame
+            const elapsedSeconds = gameStartTime ? (Date.now() - gameStartTime) / 1000 : 0;
+            const speedMultiplier = 1 + Math.min(elapsedSeconds / 30, 3); // Ramps up to 4x speed over 2 minutes
+            const speed = (Math.random() * 1.5 + 0.5) * speedMultiplier; // 0.5-2 px per frame, scaled
             const drift = (Math.random() - 0.5) * 0.5; // Gentle side-to-side movement
             let x = startX;
             let time = 0;
@@ -607,13 +610,28 @@
             setTimeout(() => messageDiv.remove(), isGolden ? GOLDEN_MESSAGE_DURATION_MS : 7000);
         }
 
-        // Create bubbles at intervals
+        // Create bubbles at intervals, speeding up over time
         function startGame() {
-            if (gameStarted) {
-                return;
-            }
+            if (gameStarted) return;
             gameStarted = true;
-            setInterval(createBubble, 800);
+            gameStartTime = Date.now();
+
+            let spawnInterval = 800; // Start: 1 bubble every 800ms
+            let spawnTimer = null;
+
+            function scheduleBubble() {
+                spawnTimer = setTimeout(() => {
+                    const elapsed = (Date.now() - gameStartTime) / 1000;
+                    // Bubbles per tick: starts at 1, grows to 6 over 2 minutes
+                    const bubblesThisTick = Math.min(6, 1 + Math.floor(elapsed / 20));
+                    for (let i = 0; i < bubblesThisTick; i++) createBubble();
+                    // Interval shrinks from 800ms down to 200ms over 2 minutes
+                    spawnInterval = Math.max(200, 800 - elapsed * 5);
+                    scheduleBubble();
+                }, spawnInterval);
+            }
+
+            scheduleBubble();
         }
 
         function startBackgroundMusic() {
