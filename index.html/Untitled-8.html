@@ -2,258 +2,246 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Bank</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
 
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
         body {
-            min-height: 100vh;
+            min-height: 100dvh;
             background: #fffafa;
             color: #4a4a4a;
-            padding: 20px;
+            padding: 12px 12px 24px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 480px;
             margin: 0 auto;
             background: white;
-            border-radius: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-            padding: 40px;
+            border-radius: 22px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            padding: 20px 16px 24px;
         }
 
         h1 {
             text-align: center;
             color: #ff4d6d;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 18px;
+            font-size: clamp(1.6em, 7vw, 2.2em);
             font-family: 'Playfair Display', serif;
             font-weight: 600;
         }
 
+        /* ── Balance Card ── */
         .balance-section {
             background: linear-gradient(135deg, #ff9a9e, #fad0c4);
             color: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 35px;
+            padding: 20px 18px;
+            border-radius: 18px;
+            margin-bottom: 18px;
             text-align: center;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 6px 14px rgba(255,77,109,0.2);
         }
 
         .balance-label {
-            font-size: 13px;
+            font-size: 12px;
             opacity: 0.95;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             font-weight: 400;
             letter-spacing: 0.5px;
         }
 
         .balance-amount {
-            font-size: 2.8em;
+            font-size: clamp(2em, 9vw, 2.6em);
             font-weight: 600;
             font-family: 'Playfair Display', serif;
         }
 
+        /* ── Form ── */
         .form-section {
-            margin-bottom: 35px;
-            padding: 25px;
+            margin-bottom: 18px;
+            padding: 16px 14px;
             background: #fff5f7;
-            border-radius: 20px;
+            border-radius: 18px;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
 
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 7px;
             color: #4a4a4a;
             font-weight: 600;
-            font-size: 0.95em;
+            font-size: 0.88em;
         }
 
         input[type="number"],
         input[type="text"] {
             width: 100%;
-            padding: 12px 15px;
+            padding: 11px 13px;
             border: 2px solid #f0e0e5;
-            border-radius: 15px;
+            border-radius: 13px;
             font-size: 15px;
             background: white;
             transition: all 0.3s;
             font-family: 'Poppins', sans-serif;
+            -webkit-appearance: none;
         }
 
         input[type="number"]:focus,
         input[type="text"]:focus {
             outline: none;
             border-color: #ff4d6d;
-            box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.1);
+            box-shadow: 0 0 0 3px rgba(255,77,109,0.1);
         }
 
         .button-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 10px;
         }
 
         button {
-            padding: 14px;
+            padding: 13px 8px;
             border: none;
-            border-radius: 20px;
-            font-size: 15px;
+            border-radius: 16px;
+            font-size: clamp(13px, 3.5vw, 15px);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn-add {
             background: #ff4d6d;
             color: white;
         }
-
-        .btn-add:hover {
-            background: #e63a57;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.3);
-        }
+        .btn-add:active { background: #e63a57; transform: scale(0.97); }
 
         .btn-subtract {
             background: #ff9a9e;
             color: white;
         }
-
-        .btn-subtract:hover {
-            background: #ff7e84;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(255, 154, 158, 0.3);
-        }
+        .btn-subtract:active { background: #ff7e84; transform: scale(0.97); }
 
         .btn-clear {
             grid-column: 1 / -1;
-            background: #d6d6d6;
+            background: #e8e8e8;
             color: #4a4a4a;
         }
+        .btn-clear:active { background: #d0d0d0; transform: scale(0.97); }
 
-        .btn-clear:hover {
-            background: #c0c0c0;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        /* Hover only on non-touch */
+        @media (hover: hover) {
+            .btn-add:hover    { background: #e63a57; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(255,77,109,0.3); }
+            .btn-subtract:hover { background: #ff7e84; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(255,154,158,0.3); }
+            .btn-clear:hover  { background: #d0d0d0; transform: translateY(-2px); }
         }
 
-        .transactions-section {
-            margin-top: 35px;
-        }
+        /* ── Transactions ── */
+        .transactions-section { margin-top: 4px; }
 
         .transactions-section h2 {
             color: #ff4d6d;
-            font-size: 1.5em;
-            margin-bottom: 18px;
+            font-size: clamp(1.1em, 5vw, 1.4em);
+            margin-bottom: 12px;
             font-family: 'Playfair Display', serif;
             font-weight: 600;
         }
 
         .transaction-list {
-            max-height: 400px;
+            max-height: 42dvh;
             overflow-y: auto;
             border: 2px solid #f0e0e5;
-            border-radius: 20px;
-            padding: 0;
+            border-radius: 18px;
             background: #fff5f7;
+            -webkit-overflow-scrolling: touch;
         }
 
         .transaction-item {
-            padding: 18px;
+            padding: 14px 12px;
             border-bottom: 1px solid #ffe0e8;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
 
-        .transaction-item:last-child {
-            border-bottom: none;
-        }
+        .transaction-item:last-child { border-bottom: none; }
 
-        .transaction-info {
-            flex: 1;
-        }
+        .transaction-info { flex: 1; min-width: 0; }
 
         .transaction-note {
             color: #4a4a4a;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            margin-bottom: 5px;
-        }
-
-        .transaction-amount {
-            font-weight: 600;
-            font-size: 1.15em;
-        }
-
-        .transaction-add {
-            color: #ff4d6d;
-        }
-
-        .transaction-subtract {
-            color: #ff9a9e;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .transaction-date {
             color: #999;
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        .empty-message {
-            text-align: center;
-            color: #bbb;
-            padding: 40px 20px;
-            font-size: 0.95em;
+        .transaction-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
         }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 1em;
+            white-space: nowrap;
+        }
+
+        .transaction-add      { color: #ff4d6d; }
+        .transaction-subtract { color: #ff9a9e; }
 
         .btn-delete-transaction {
             background: #ffb3ba;
             color: white;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 12px;
-            margin-left: 10px;
-            transition: all 0.3s;
+            font-size: 11px;
+            transition: all 0.2s;
             font-weight: 600;
+            white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-delete-transaction:active { background: #ff9aa2; transform: scale(0.96); }
+
+        .empty-message {
+            text-align: center;
+            color: #bbb;
+            padding: 30px 16px;
+            font-size: 0.9em;
         }
 
-        .btn-delete-transaction:hover {
-            background: #ff9aa2;
-            transform: scale(1.05);
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #fff5f7;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ff4d6d;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #e63a57;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fff5f7; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #ff4d6d; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -268,17 +256,15 @@
         <div class="form-section">
             <div class="form-group">
                 <label for="amount">Amount ($)</label>
-                <input type="number" id="amount" placeholder="Enter amount" step="0.01" min="0">
+                <input type="number" id="amount" placeholder="Enter amount" step="0.01" min="0" inputmode="decimal">
             </div>
-
             <div class="form-group">
                 <label for="note">Note (optional)</label>
                 <input type="text" id="note" placeholder="Add a note...">
             </div>
-
             <div class="button-group">
-                <button class="btn-add" onclick="addMoney()">➕ Add Money</button>
-                <button class="btn-subtract" onclick="subtractMoney()">➖ Spend Money</button>
+                <button class="btn-add" onclick="addMoney()">➕ Add</button>
+                <button class="btn-subtract" onclick="subtractMoney()">➖ Spend</button>
                 <button class="btn-clear" onclick="clearForm()">Clear</button>
             </div>
         </div>
@@ -292,7 +278,6 @@
     </div>
 
     <script>
-        // Initialize from localStorage
         let transactions = JSON.parse(localStorage.getItem('bankTransactions')) || [];
 
         function updateBalance() {
@@ -304,76 +289,41 @@
         function addMoney() {
             const amount = parseFloat(document.getElementById('amount').value);
             const note = document.getElementById('note').value || 'Added money';
-
-            if (!amount || amount <= 0) {
-                alert('Please enter a valid amount');
-                return;
-            }
-
-            transactions.unshift({
-                id: Date.now(),
-                type: 'add',
-                amount: amount,
-                note: note,
-                date: new Date().toLocaleString()
-            });
-
-            updateBalance();
-            renderTransactions();
-            clearForm();
+            if (!amount || amount <= 0) { alert('Please enter a valid amount'); return; }
+            transactions.unshift({ id: Date.now(), type: 'add', amount, note, date: new Date().toLocaleString() });
+            updateBalance(); renderTransactions(); clearForm();
         }
 
         function subtractMoney() {
             const amount = parseFloat(document.getElementById('amount').value);
             const note = document.getElementById('note').value || 'Spent money';
-
-            if (!amount || amount <= 0) {
-                alert('Please enter a valid amount');
-                return;
-            }
-
+            if (!amount || amount <= 0) { alert('Please enter a valid amount'); return; }
             const currentBalance = transactions.reduce((sum, t) => sum + t.amount, 0);
-            if (currentBalance < amount) {
-                alert(`Insufficient balance! Current balance: $${currentBalance.toFixed(2)}`);
-                return;
-            }
-
-            transactions.unshift({
-                id: Date.now(),
-                type: 'subtract',
-                amount: -amount,
-                note: note,
-                date: new Date().toLocaleString()
-            });
-
-            updateBalance();
-            renderTransactions();
-            clearForm();
+            if (currentBalance < amount) { alert(`Insufficient balance! Current balance: $${currentBalance.toFixed(2)}`); return; }
+            transactions.unshift({ id: Date.now(), type: 'subtract', amount: -amount, note, date: new Date().toLocaleString() });
+            updateBalance(); renderTransactions(); clearForm();
         }
 
         function deleteTransaction(id) {
             transactions = transactions.filter(t => t.id !== id);
-            updateBalance();
-            renderTransactions();
+            updateBalance(); renderTransactions();
         }
 
         function renderTransactions() {
             const listContainer = document.getElementById('transactionList');
-
             if (transactions.length === 0) {
                 listContainer.innerHTML = '<div class="empty-message">No transactions yet. Start by adding or spending money!</div>';
                 return;
             }
-
             listContainer.innerHTML = transactions.map(t => `
                 <div class="transaction-item">
                     <div class="transaction-info">
                         <div class="transaction-note">${t.note}</div>
-                        <small style="color: #999;">${t.date}</small>
+                        <div class="transaction-date">${t.date}</div>
                     </div>
-                    <div>
+                    <div class="transaction-right">
                         <span class="transaction-amount ${t.type === 'add' ? 'transaction-add' : 'transaction-subtract'}">
-                            ${t.type === 'add' ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}
+                            ${t.type === 'add' ? '+' : '-'}$${Math.abs(t.amount).toFixed(2)}
                         </span>
                         <button class="btn-delete-transaction" onclick="deleteTransaction(${t.id})">Delete</button>
                     </div>
@@ -384,10 +334,8 @@
         function clearForm() {
             document.getElementById('amount').value = '';
             document.getElementById('note').value = '';
-            document.getElementById('amount').focus();
         }
 
-        // Initial render
         updateBalance();
         renderTransactions();
     </script>
