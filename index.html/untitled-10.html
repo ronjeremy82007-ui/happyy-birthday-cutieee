@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Space — Calendar, Wallet &amp; Diary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#fff5f7",
+            card: "#ffffff",
+            "card-hover": "#ffe6f0",
+            accent: "#d6336c",
+            "accent-light": "#ff6b99",
+            rose: "#e11d48",
+            blush: "#fda4af",
+            wine: "#881337",
+            lavender: "#c4b5fd",
+            gold: "#fbbf24",
+          },
+          fontFamily: {
+            display: ["Playfair Display", "Georgia", "serif"],
+            body: ["Poppins", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fff0f3 0%, #ffe6f0 50%, #ffd4e5 100%);
+    }
+    .modal-backdrop { background: rgba(255,255,255,.85); backdrop-filter: blur(8px); }
+    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #ffffff inset !important; -webkit-text-fill-color: #4a4a4a !important; }
+
+    /* Floating hearts background */
+    .hearts-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .hearts-bg span {
+      position: absolute; font-size: 1.2rem; opacity: 0.04;
+      animation: floatHeart linear infinite;
+    }
+    @keyframes floatHeart {
+      0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.05; }
+      90%  { opacity: 0.02; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Glow effects */
+    .glow-pink { box-shadow: 0 8px 25px rgba(255, 107, 153, 0.12); }
+    .glow-gold { box-shadow: 0 0 20px rgba(251,191,36,.1); }
+    .btn-romantic {
+      background: linear-gradient(135deg, #d6336c, #c41e6d);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: white;
+    }
+    .btn-romantic:hover {
+      background: linear-gradient(135deg, #ff6b99, #d6336c);
+      box-shadow: 0 8px 25px rgba(255, 107, 153, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Smooth transitions */
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Calendar cells */
+    .cal-cell {
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      color: #4a4a4a;
+      background: white;
+    }
+    .cal-cell:hover {
+      background: rgba(255, 107, 153, 0.1);
+      border-color: rgba(255, 107, 153, 0.3);
+      transform: scale(1.05);
+      color: #d6336c;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 107, 153, 0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 107, 153, 0.5); }
+
+    /* Diary entry card */
+    .diary-entry {
+      border-left: 3px solid rgba(255, 107, 153, 0.3);
+      transition: all 0.2s ease;
+      background: white;
+    }
+    .diary-entry:hover {
+      border-left-color: #ff6b99;
+      background: #fff5f7;
+      box-shadow: 0 8px 25px rgba(255, 107, 153, 0.15);
+    }
+
+    /* Textarea styling */
+    textarea:focus { border-color: rgba(255, 107, 153, 0.5) !important; }
+    input:focus { border-color: rgba(255, 107, 153, 0.5) !important; }
+  </style>
+</head>
+
+<body class="light min-h-screen">
+
+  <!-- Floating Hearts Background -->
+  <div class="hearts-bg" id="heartsContainer"></div>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <div id="dashboard" class="min-h-screen flex flex-col relative z-10">
+
+    <!-- Top Bar -->
+    <header class="bg-white/80 backdrop-blur-md px-6 py-4 flex items-center justify-between shadow-lg border-b border-pink-100">
+      <div class="flex items-center gap-3">
+        <button onclick="goHome()" class="text-2xl hover:scale-110 transition-transform">←</button>
+        <span class="text-xl">💕</span>
+        <h1 class="text-xl font-display font-bold text-accent tracking-wide">Our Space</h1>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="bg-white/60 backdrop-blur-sm border-b border-pink-100 px-6 flex gap-1 pt-2">
+      <button onclick="switchTab('calendar')" id="navCalendar"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-300 text-gray-600">📅 Calendar</button>
+      <button onclick="switchTab('wallet')" id="navWallet"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-300 text-gray-600">💰 Wallet</button>
+      <button onclick="switchTab('diary')" id="navDiary"
+        class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-300 text-gray-600">📖 Diary</button>
+    </nav>
+
+    <!-- Content Area -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-gradient-to-b from-transparent to-pink-50/30">
+
+      <!-- ========== CALENDAR TAB ========== -->
+      <section id="calendarTab" class="max-w-4xl mx-auto space-y-6 fade-in">
+        <div class="flex items-center justify-between">
+          <button onclick="changeMonth(-1)" class="p-3 rounded-xl hover:bg-pink-100 transition-all duration-300 text-accent text-lg">&larr;</button>
+          <h2 id="calendarTitle" class="text-2xl font-display font-bold text-accent"></h2>
+          <button onclick="changeMonth(1)" class="p-3 rounded-xl hover:bg-pink-100 transition-all duration-300 text-accent text-lg">&rarr;</button>
+        </div>
+        <div class="grid grid-cols-7 text-center text-xs font-semibold text-pink-300 gap-1 uppercase tracking-wider">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div id="calendarGrid" class="grid grid-cols-7 gap-1.5"></div>
+      </section>
+
+      <!-- ========== WALLET TAB ========== -->
+      <section id="walletTab" class="hidden max-w-4xl mx-auto space-y-8 fade-in">
+        <div class="bg-gradient-to-br from-pink-50 via-white to-pink-50 rounded-3xl p-8 text-center shadow-xl glow-pink border border-pink-200">
+          <p class="text-sm text-pink-400 uppercase tracking-widest font-medium">Current Balance</p>
+          <p id="balanceDisplay" class="text-5xl font-display font-extrabold text-accent mt-3">$0.00</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <form onsubmit="addTransaction(event,'income')"
+            class="bg-white rounded-2xl p-6 space-y-3 shadow-lg border border-green-200 hover:border-green-300 transition-all duration-300">
+            <h3 class="text-lg font-display font-semibold text-green-600 flex items-center gap-2">✨ Income</h3>
+            <input type="text" required placeholder="Description" id="incomeDesc"
+              class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-green-300/50 placeholder-gray-400 transition text-gray-700" />
+            <input type="number" step="0.01" min="0.01" required placeholder="Amount" id="incomeAmt"
+              class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-green-300/50 placeholder-gray-400 transition text-gray-700" />
+            <button type="submit"
+              class="w-full py-2.5 rounded-xl bg-green-500 hover:bg-green-600 font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20">Add Income</button>
+          </form>
+          <form onsubmit="addTransaction(event,'expense')"
+            class="bg-white rounded-2xl p-6 space-y-3 shadow-lg border border-red-200 hover:border-red-300 transition-all duration-300">
+            <h3 class="text-lg font-display font-semibold text-red-600 flex items-center gap-2">💸 Expense</h3>
+            <input type="text" required placeholder="Description" id="expenseDesc"
+              class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-red-300/50 placeholder-gray-400 transition text-gray-700" />
+            <input type="number" step="0.01" min="0.01" required placeholder="Amount" id="expenseAmt"
+              class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-red-300/50 placeholder-gray-400 transition text-gray-700" />
+            <button type="submit"
+              class="w-full py-2.5 rounded-xl bg-red-500 hover:bg-red-600 font-semibold text-white transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20">Add Expense</button>
+          </form>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-lg border border-pink-200">
+          <h3 class="text-lg font-display font-semibold text-accent mb-4">Transaction History</h3>
+          <div id="txList" class="space-y-2 max-h-96 overflow-y-auto"></div>
+          <p id="txEmpty" class="text-gray-500 text-sm text-center py-4 italic">No transactions yet.</p>
+        </div>
+      </section>
+
+      <!-- ========== DIARY TAB ========== -->
+      <section id="diaryTab" class="hidden max-w-3xl mx-auto space-y-8 fade-in">
+        <!-- Write new entry -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg glow-pink border border-pink-200">
+          <h3 class="text-lg font-display font-semibold text-accent mb-4 flex items-center gap-2">✍️ Write in your diary</h3>
+          <input type="text" id="diaryTitle" placeholder="Title (optional)" maxlength="100"
+            class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-accent/30 placeholder-gray-400 mb-3 transition text-gray-700" />
+          <textarea id="diaryBody" rows="6" placeholder="Dear diary, today..."
+            class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-accent/30 placeholder-gray-400 resize-none transition text-gray-700"></textarea>
+          <div class="flex justify-between items-center mt-4">
+            <p class="text-xs text-gray-500 italic" id="diaryCharCount">0 characters</p>
+            <button onclick="saveDiaryEntry()" class="px-6 py-2.5 rounded-xl btn-romantic font-semibold text-sm">
+              Save Entry 💝
+            </button>
+          </div>
+        </div>
+
+        <!-- Diary entries list -->
+        <div>
+          <h3 class="text-lg font-display font-semibold text-accent mb-4 flex items-center gap-2">📖 Your Entries</h3>
+          <div id="diaryList" class="space-y-4"></div>
+          <p id="diaryEmpty" class="text-gray-500 text-sm text-center py-8 italic">Your diary is empty. Start writing your story... 💕</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ========== CALENDAR NOTE MODAL ========== -->
+  <div id="noteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+    <div class="bg-white rounded-3xl shadow-2xl glow-pink w-full max-w-md mx-4 p-6 space-y-4 border border-pink-200 fade-in">
+      <div class="flex items-center justify-between">
+        <h3 id="noteModalTitle" class="text-lg font-display font-bold text-accent"></h3>
+        <button onclick="closeNoteModal()" class="text-gray-400 hover:text-accent text-2xl leading-none transition">&times;</button>
+      </div>
+      <textarea id="noteText" rows="4" placeholder="Write a little note for this day... 💭"
+        class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none placeholder-gray-400 transition text-gray-700"></textarea>
+      <div class="flex gap-3 justify-end">
+        <button onclick="deleteNote()" id="btnDeleteNote"
+          class="px-4 py-2 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 text-sm transition-all duration-300 hidden">Delete</button>
+        <button onclick="saveNote()"
+          class="px-6 py-2 rounded-xl btn-romantic font-semibold text-sm">Save 💕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DIARY EDIT MODAL ========== -->
+  <div id="diaryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
+    <div class="bg-white rounded-3xl shadow-2xl glow-pink w-full max-w-lg mx-4 p-6 space-y-4 border border-pink-200 fade-in">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-display font-bold text-accent">Edit Entry</h3>
+        <button onclick="closeDiaryModal()" class="text-gray-400 hover:text-accent text-2xl leading-none transition">&times;</button>
+      </div>
+      <input type="text" id="editDiaryTitle" placeholder="Title (optional)" maxlength="100"
+        class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-accent/30 placeholder-gray-400 transition text-gray-700" />
+      <textarea id="editDiaryBody" rows="6" placeholder="Dear diary..."
+        class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-pink-200 focus:outline-none focus:ring-2 focus:ring-accent/30 resize-none placeholder-gray-400 transition text-gray-700"></textarea>
+      <div class="flex gap-3 justify-end">
+        <button onclick="deleteEditingDiary()"
+          class="px-4 py-2 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 text-sm transition-all duration-300">Delete</button>
+        <button onclick="updateDiaryEntry()"
+          class="px-6 py-2 rounded-xl btn-romantic font-semibold text-sm">Update 💕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SUPABASE + APP LOGIC ===================== -->
+  <!--
+    ADDITIONAL SQL FOR DIARY (run in Supabase SQL Editor):
+
+    create table diary (
+      id bigint generated always as identity primary key,
+      user_id uuid references auth.users(id) not null,
+      title text default '',
+      body text not null,
+      created_at timestamptz default now(),
+      updated_at timestamptz default now()
+    );
+
+    alter table diary enable row level security;
+
+    create policy "Users manage own diary"
+      on diary for all
+      using (auth.uid() = user_id)
+      with check (auth.uid() = user_id);
+  -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+
+    const SUPABASE_URL  = "https://zifaparcurgoxjjhgvkg.supabase.co";
+    const SUPABASE_KEY  = "sb_publishable_DUbpC_Kmk5pVHz1mJWrpEg_GMLoPH8s";
+
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ── Floating Hearts ────────────────────────────────────────
+    (function spawnHearts() {
+      const container = document.getElementById("heartsContainer");
+      const hearts = ["♥", "♡", "❤", "💕", "✿", "❀"];
+      for (let i = 0; i < 15; i++) {
+        const span = document.createElement("span");
+        span.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        span.style.left = Math.random() * 100 + "%";
+        span.style.animationDuration = (12 + Math.random() * 18) + "s";
+        span.style.animationDelay = (Math.random() * 15) + "s";
+        span.style.fontSize = (0.8 + Math.random() * 1) + "rem";
+        container.appendChild(span);
+      }
+    })();
+
+    // ── State ──────────────────────────────────────────────────
+    let currentUser    = null;
+    let calendarYear   = new Date().getFullYear();
+    let calendarMonth  = new Date().getMonth();
+    let selectedDate   = null;
+    let notesCache     = {};
+    let editingDiaryId = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    // ── Diary character counter ────────────────────────────────
+    document.addEventListener("DOMContentLoaded", () => {
+      const diaryBody = $("diaryBody");
+      if (diaryBody) {
+        diaryBody.addEventListener("input", () => {
+          $("diaryCharCount").textContent = diaryBody.value.length + " characters";
+        });
+      }
+    });
+
+    // ── Auth helpers ───────────────────────────────────────────
+    window.goHome = () => {
+      window.location.href = 'index.html';
+    };
+
+    async function initSession() {
+      const { data } = await sb.auth.getSession();
+      currentUser = data?.session?.user || null;
+      if (!currentUser) {
+        window.location.href = 'index.html';
+        return;
+      }
+      switchTab("calendar");
+    }
+
+    sb.auth.onAuthStateChange((event, session) => {
+      currentUser = session?.user || null;
+      if (!currentUser) {
+        notesCache = {};
+        window.location.href = 'index.html';
+      }
+    });
+
+    // ── Tab switching ──────────────────────────────────────────
+    window.switchTab = (tab) => {
+      $("calendarTab").classList.toggle("hidden", tab !== "calendar");
+      $("walletTab").classList.toggle("hidden",   tab !== "wallet");
+      $("diaryTab").classList.toggle("hidden",    tab !== "diary");
+      document.querySelectorAll(".tab-btn").forEach((b) => {
+        const tabName = b.id.replace("nav", "").toLowerCase();
+        b.className = `tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-300 ${
+          tabName === tab
+            ? "bg-white text-accent border-b-2 border-accent"
+            : "text-gray-500 hover:text-gray-600"
+        }`;
+      });
+      if (tab === "wallet")   loadWallet();
+      if (tab === "calendar") { notesCache = {}; renderCalendar(); }
+      if (tab === "diary")    loadDiary();
+    };
+
+    // ══════════════════════════════════════════════════════════
+    //  CALENDAR MODULE
+    // ══════════════════════════════════════════════════════════
+
+    const MONTHS = ["January","February","March","April","May","June",
+                    "July","August","September","October","November","December"];
+
+    window.changeMonth = (dir) => {
+      calendarMonth += dir;
+      if (calendarMonth < 0)  { calendarMonth = 11; calendarYear--; }
+      if (calendarMonth > 11) { calendarMonth = 0;  calendarYear++; }
+      notesCache = {};
+      renderCalendar();
+    };
+
+    async function renderCalendar() {
+      $("calendarTitle").textContent = `${MONTHS[calendarMonth]} ${calendarYear}`;
+      const grid     = $("calendarGrid");
+      grid.innerHTML = "";
+
+      const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+      const daysIn   = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const today    = new Date();
+
+      await loadMonthNotes();
+
+      for (let i = 0; i < firstDay; i++) {
+        grid.appendChild(Object.assign(document.createElement("div"), { className: "h-14" }));
+      }
+
+      for (let d = 1; d <= daysIn; d++) {
+        const dateStr = `${calendarYear}-${String(calendarMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+        const isToday = today.getFullYear() === calendarYear && today.getMonth() === calendarMonth && today.getDate() === d;
+        const hasNote = !!notesCache[dateStr];
+
+        const cell = document.createElement("button");
+        cell.textContent = d;
+        cell.className = `cal-cell h-14 rounded-xl text-sm font-medium relative
+          ${isToday ? "ring-2 ring-accent bg-pink-100 text-accent font-bold" : "text-gray-700"}`;
+        cell.onclick = () => openNoteModal(dateStr);
+
+        if (hasNote) {
+          const dot = document.createElement("span");
+          dot.className = "absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-accent";
+          cell.appendChild(dot);
+        }
+        grid.appendChild(cell);
+      }
+    }
+
+    async function loadMonthNotes() {
+      if (!currentUser) return;
+      const prefix = `${calendarYear}-${String(calendarMonth+1).padStart(2,"0")}`;
+      const startDate = `${prefix}-01`;
+      const daysIn = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+      const endDate = `${prefix}-${String(daysIn).padStart(2,"0")}`;
+
+      const { data } = await sb
+        .from("notes")
+        .select("note_date, text")
+        .eq("user_id", currentUser.id)
+        .gte("note_date", startDate)
+        .lte("note_date", endDate);
+
+      notesCache = {};
+      if (data) {
+        data.forEach((row) => { notesCache[row.note_date] = row.text; });
+      }
+    }
+
+    window.openNoteModal = (dateStr) => {
+      selectedDate = dateStr;
+      $("noteModalTitle").textContent = formatDateStr(dateStr);
+      $("noteText").value = notesCache[dateStr] || "";
+      $("btnDeleteNote").classList.toggle("hidden", !notesCache[dateStr]);
+      $("noteModal").classList.remove("hidden");
+    };
+
+    window.closeNoteModal = () => {
+      $("noteModal").classList.add("hidden");
+      selectedDate = null;
+    };
+
+    window.saveNote = async () => {
+      if (!selectedDate || !currentUser) return;
+      const text = $("noteText").value.trim();
+      if (!text) return;
+
+      await sb
+        .from("notes")
+        .upsert({
+          user_id: currentUser.id,
+          note_date: selectedDate,
+          text: text,
+        }, { onConflict: "user_id,note_date" });
+
+      notesCache[selectedDate] = text;
+      closeNoteModal();
+      renderCalendar();
+    };
+
+    window.deleteNote = async () => {
+      if (!selectedDate || !currentUser) return;
+
+      await sb
+        .from("notes")
+        .delete()
+        .eq("user_id", currentUser.id)
+        .eq("note_date", selectedDate);
+
+      delete notesCache[selectedDate];
+      closeNoteModal();
+      renderCalendar();
+    };
+
+    function formatDateStr(s) {
+      const [y, m, d] = s.split("-").map(Number);
+      return `${MONTHS[m-1]} ${d}, ${y}`;
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  BANK WALLET MODULE
+    // ══════════════════════════════════════════════════════════
+
+    async function loadWallet() {
+      if (!currentUser) return;
+
+      const { data: txns } = await sb
+        .from("transactions")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      const list = $("txList");
+      list.innerHTML = "";
+
+      if (!txns || txns.length === 0) {
+        $("txEmpty").classList.remove("hidden");
+        $("balanceDisplay").textContent = "$0.00";
+        $("balanceDisplay").className = "text-5xl font-display font-extrabold mt-3 text-accent";
+        return;
+      }
+
+      $("txEmpty").classList.add("hidden");
+
+      let balance = 0;
+      txns.forEach((tx) => {
+        balance += tx.type === "income" ? Number(tx.amount) : -Number(tx.amount);
+      });
+
+      txns.forEach((tx) => {
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border border-pink-100 transition-all duration-200 hover:bg-pink-50";
+        const isIncome = tx.type === "income";
+        const amt = Number(tx.amount);
+        row.innerHTML = `
+          <div>
+            <p class="text-sm font-medium text-gray-700">${escapeHtml(tx.description)}</p>
+            <p class="text-xs text-gray-500">${new Date(tx.created_at).toLocaleDateString()}</p>
+          </div>
+          <span class="font-semibold ${isIncome ? "text-green-600" : "text-red-600"}">
+            ${isIncome ? "+" : "-"}$${amt.toFixed(2)}
+          </span>`;
+        list.appendChild(row);
+      });
+
+      $("balanceDisplay").textContent = `${balance < 0 ? "-" : ""}$${Math.abs(balance).toFixed(2)}`;
+      $("balanceDisplay").className   = `text-5xl font-display font-extrabold mt-3 ${balance < 0 ? "text-red-600" : "text-accent"}`;
+    }
+
+    window.addTransaction = async (e, type) => {
+      e.preventDefault();
+      if (!currentUser) return;
+
+      const descEl = $(type + "Desc");
+      const amtEl  = $(type + "Amt");
+      const description = descEl.value.trim();
+      const amount      = parseFloat(amtEl.value);
+      if (!description || isNaN(amount) || amount <= 0) return;
+
+      await sb
+        .from("transactions")
+        .insert({
+          user_id: currentUser.id,
+          type,
+          description,
+          amount,
+        });
+
+      descEl.value = "";
+      amtEl.value  = "";
+      loadWallet();
+    };
+
+    // ══════════════════════════════════════════════════════════
+    //  DIARY MODULE
+    // ══════════════════════════════════════════════════════════
+
+    async function loadDiary() {
+      if (!currentUser) return;
+
+      const { data: entries } = await sb
+        .from("diary")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      const list = $("diaryList");
+      list.innerHTML = "";
+
+      if (!entries || entries.length === 0) {
+        $("diaryEmpty").classList.remove("hidden");
+        return;
+      }
+
+      $("diaryEmpty").classList.add("hidden");
+
+      entries.forEach((entry) => {
+        const card = document.createElement("div");
+        card.className = "diary-entry bg-white rounded-2xl p-5 cursor-pointer border border-pink-200";
+        card.onclick = () => openDiaryEditModal(entry);
+
+        const date = new Date(entry.created_at);
+        const dateStr = date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+        const timeStr = date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+        const title = entry.title ? `<h4 class="font-display font-semibold text-accent text-base mb-1">${escapeHtml(entry.title)}</h4>` : "";
+        const bodyPreview = entry.body.length > 200 ? entry.body.substring(0, 200) + "..." : entry.body;
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between mb-2">
+            <p class="text-xs text-pink-400 italic">${dateStr} at ${timeStr}</p>
+          </div>
+          ${title}
+          <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">${escapeHtml(bodyPreview)}</p>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    window.saveDiaryEntry = async () => {
+      if (!currentUser) return;
+      const title = $("diaryTitle").value.trim();
+      const body  = $("diaryBody").value.trim();
+      if (!body) return;
+
+      await sb
+        .from("diary")
+        .insert({
+          user_id: currentUser.id,
+          title,
+          body,
+        });
+
+      $("diaryTitle").value = "";
+      $("diaryBody").value  = "";
+      $("diaryCharCount").textContent = "0 characters";
+      loadDiary();
+    };
+
+    function openDiaryEditModal(entry) {
+      editingDiaryId = entry.id;
+      $("editDiaryTitle").value = entry.title || "";
+      $("editDiaryBody").value  = entry.body;
+      $("diaryModal").classList.remove("hidden");
+    }
+
+    window.closeDiaryModal = () => {
+      $("diaryModal").classList.add("hidden");
+      editingDiaryId = null;
+    };
+
+    window.updateDiaryEntry = async () => {
+      if (!editingDiaryId || !currentUser) return;
+      const title = $("editDiaryTitle").value.trim();
+      const body  = $("editDiaryBody").value.trim();
+      if (!body) return;
+
+      await sb
+        .from("diary")
+        .update({ title, body, updated_at: new Date().toISOString() })
+        .eq("id", editingDiaryId)
+        .eq("user_id", currentUser.id);
+
+      closeDiaryModal();
+      loadDiary();
+    };
+
+    window.deleteEditingDiary = async () => {
+      if (!editingDiaryId || !currentUser) return;
+
+      await sb
+        .from("diary")
+        .delete()
+        .eq("id", editingDiaryId)
+        .eq("user_id", currentUser.id);
+
+      closeDiaryModal();
+      loadDiary();
+    };
+
+    // ── Utility ────────────────────────────────────────────────
+    function escapeHtml(str) {
+      const d = document.createElement("div");
+      d.appendChild(document.createTextNode(str));
+      return d.innerHTML;
+    }
+
+    initSession();
+  </script>
+</body>
+</html>
