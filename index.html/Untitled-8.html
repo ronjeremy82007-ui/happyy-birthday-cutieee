@@ -34,13 +34,18 @@
             padding: 20px 16px 24px;
         }
 
-        h1 {
-            text-align: center;
-            color: #ff4d6d;
+        .top-banner {
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
             margin-bottom: 18px;
-            font-size: clamp(1.6em, 7vw, 2.2em);
-            font-family: 'Playfair Display', serif;
-            font-weight: 600;
+        }
+
+        .top-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
         }
 
         /* ── Balance Card ── */
@@ -246,7 +251,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>🏦 My Bank</h1>
+        <div class="top-banner">
+            <img src="daniel.jpg" alt="Hello Kitty and Dear Daniel">
+        </div>
 
         <div class="balance-section">
             <div class="balance-label">Current Balance</div>
