@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Me & My Girls Documentary - A Love Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .cinema-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at center, #1a1a1a 0%, #000 100%);
+        }
+
+        .cinema-screen {
+            width: 90vw;
+            height: 90vh;
+            max-width: 1400px;
+            max-height: 800px;
+            position: relative;
+            overflow: hidden;
+            border: 15px solid #2a2a2a;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3), inset 0 0 30px rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 80px;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .slide-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            color: #ffd700;
+            letter-spacing: 2px;
+        }
+
+        .slide-dialogue {
+            font-size: 1.3em;
+            line-height: 1.8;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.95);
+            color: #ffffff;
+            font-style: italic;
+            animation: fadeInText 1s ease-in;
+        }
+
+        @keyframes fadeInText {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            background: rgba(255, 215, 0, 0.8);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        button:hover {
+            background: #ffd700;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .slide-counter {
+            color: #ffd700;
+            font-size: 1.1em;
+            font-weight: bold;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: #ffd700;
+            transition: width 0.3s ease;
+            z-index: 5;
+        }
+
+        .cinema-lights {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .light {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+        }
+
+        .light1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+        }
+
+        .light2 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #ff6b6b 0%, transparent 70%);
+            bottom: -80px;
+            left: -80px;
+        }
+
+        @media (max-width: 768px) {
+            .cinema-screen {
+                width: 95vw;
+                height: 95vh;
+                border-width: 10px;
+            }
+
+            .slide {
+                padding: 40px;
+            }
+
+            .slide-title {
+                font-size: 1.8em;
+            }
+
+            .slide-dialogue {
+                font-size: 1em;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cinema-lights">
+        <div class="light light1"></div>
+        <div class="light light2"></div>
+    </div>
+
+    <div class="cinema-container">
+        <div class="cinema-screen">
+            <div class="progress-bar" id="progressBar"></div>
+
+            <!-- Slide 1: Title -->
+            <div class="slide active" style="background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">ME & MY GIRLS</div>
+                    <div class="slide-dialogue">A Documentary of Love</div>
+                </div>
+            </div>
+
+            <!-- Slide 2: First Year College -->
+            <div class="slide" style="background: linear-gradient(to right, #1e3c72 0%, #2a5298 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">CHAPTER 1: THE BEGINNING</div>
+                    <div class="slide-dialogue">"First year of college is wild, man. Everyone acts like they know what they're doing, meanwhile I'm out here pretending the campus map isn't confusing as hell."</div>
+                </div>
+            </div>
+
+            <!-- Slide 3: She Was Different -->
+            <div class="slide" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">THE SPARK</div>
+                    <div class="slide-dialogue">"From day one, she was… different. Not 'crazy loud' different, just this quiet, soft energy that somehow still notices everything."</div>
+                </div>
+            </div>
+
+            <!-- Slide 4: The NPC Replies -->
+            <div class="slide" style="background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">THE STRUGGLE</div>
+                    <div class="slide-dialogue">"Every time she'd try to talk to me, my brain hit factory reset. I'd reply with the most NPC line possible. Or worse... I'd pretend to be busy."</div>
+                </div>
+            </div>
+
+            <!-- Slide 5: She Never Stopped -->
+            <div class="slide" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">HER PERSISTENCE</div>
+                    <div class="slide-dialogue">"But she never stopped. Every day, she'd still toss a smile, wave, or try starting a convo like she wasn't slowly carrying 99% of the communication."</div>
+                </div>
+            </div>
+
+            <!-- Slide 6: The Observation -->
+            <div class="slide" style="background: linear-gradient(to right, #ee7752 0%, #e73c7e 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">MESMERIZED</div>
+                    <div class="slide-dialogue">"I'd watch her sometimes... the way she talked, the way her eyes lit up, the way she'd tuck her hair behind her ear... and I'd think: Why can't you just talk?"</div>
+                </div>
+            </div>
+
+            <!-- Slide 7: The System Reboot -->
+            <div class="slide" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">NOVEMBER 20TH - THE REBOOT</div>
+                    <div class="slide-dialogue">"But every system has a reboot point. For me, that was November 20th. The mall became where the 'malfunctioning robot' finally started to speak."</div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Communication Shift -->
+            <div class="slide" style="background: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">BALANCE</div>
+                    <div class="slide-dialogue">"The communication ratio shifted. It wasn't 99-to-1 anymore. It was two people finally finding a frequency that worked."</div>
+                </div>
+            </div>
+
+            <!-- Slide 9: December 26th -->
+            <div class="slide" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">DECEMBER 26TH</div>
+                    <div class="slide-dialogue">"At a McDonald's, she took a chance and kissed my cheek. For a guy who used to give NPC replies, it was a total system override."</div>
+                </div>
+            </div>
+
+            <!-- Slide 10: January 9th -->
+            <div class="slide" style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">JANUARY 9TH - THE KISS</div>
+                    <div class="slide-dialogue">"A kiss so captivating at the mall that I completely lost track of time. The map of my heart was becoming very, very clear."</div>
+                </div>
+            </div>
+
+            <!-- Slide 11: Montage -->
+            <div class="slide" style="background: linear-gradient(to right, #16213e 0%, #0f3460 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">OUR MOMENTS</div>
+                    <div class="slide-dialogue">"Infinity Mall, Inorbit Mall, Sharing earphones, College elevator, Canteen, Bistro, Chess games, Yakult bottles, Searching for cheese steamed momos, Juhu, Rct mall, Oberoi Mall Versova, Aksa beach... "</div>
+                </div>
+            </div>
+
+            <!-- Slide 12: Boss & Gulaam -->
+            <div class="slide" style="background: linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">OUR ROLES</div>
+                    <div class="slide-dialogue">"She became my boss, my 'Malkin,' and I was more than happy to be her 'Gulaam.' We found our rhythm in the small stuff."</div>
+                </div>
+            </div>
+
+            <!-- Slide 13: February 3rd -->
+            <div class="slide" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">I LOVE YOU</div>
+                    <div class="slide-dialogue">"The 'I Love You' felt like a natural conclusion to the first chapter. But every documentary needs conflict to show strength."</div>
+                </div>
+            </div>
+
+            <!-- Slide 14: The Storm -->
+            <div class="slide" style="background: linear-gradient(135deg, #1e3c72 0%, #16213e 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">MARCH 3RD - THE STORM</div>
+                    <div class="slide-dialogue">"The storm hit. I messed up. Digital relics from my past made her feel insecure and scared. And I realized I had become the guy causing her pain."</div>
+                </div>
+            </div>
+
+            <!-- Slide 15: The Apology -->
+            <div class="slide" style="background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">ACTION SPEAKS</div>
+                    <div class="slide-dialogue">"I didn't just apologize; I cleared the slate. I deleted the past to make room for a permanent present. No mystery left. Only a life full of her."</div>
+                </div>
+            </div>
+
+            <!-- Slide 16: Present Day -->
+            <div class="slide" style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">TODAY - THREE MONTHS IN</div>
+                    <div class="slide-dialogue">"The campus map is still a mess, and I'm probably still a bit of a robot sometimes. But she's still here. And I'm finally ready to admit it."</div>
+                </div>
+            </div>
+
+            <!-- Slide 17: Final Declaration -->
+            <div class="slide" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">FOREVER</div>
+                    <div class="slide-dialogue">"I don't just want to know her. I want to be the guy who makes sure she never feels 'scared' ever again."</div>
+                </div>
+            </div>
+
+            <!-- Slide 18: The End -->
+            <div class="slide" style="background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);">
+                <div class="slide-content">
+                    <div class="slide-title">THE END</div>
+                    <div class="slide-dialogue">A Love Story That Never Stops Being Written</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="previousSlide()">← PREV</button>
+                <span class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">18</span></span>
+                <button id="nextBtn" onclick="nextSlide()">NEXT →</button>
+                <button id="homeBtn" onclick="window.location.href='index.html'" style="display:none;">🏠 HOME</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n].classList.add('active');
+            document.getElementById('currentSlide').textContent = n + 1;
+            updateProgressBar();
+
+            if (n === totalSlides - 1) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('homeBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+                document.getElementById('homeBtn').style.display = 'none';
+            }
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
