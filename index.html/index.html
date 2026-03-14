@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Under Construction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding-top: 50px;
+        }
+        .header-container {
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+        h1 {
+            color: #d9534f;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .instructions {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 15px;
+        }
+        #game-wrapper {
+            margin: 0 auto;
+            width: 600px;
+            max-width: 95%;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            background-color: #fafafa;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
 
+    <div class="header-container">
+        <h1>🚧 This site is under construction 🚧</h1>
+        <p>Please wait, you can play this game while it updates!</p>
+        <p class="instructions"><strong>How to play:</strong> Press the <b>Spacebar</b> or tap the game to jump over the obstacles.</p>
+    </div>
+
+    <div id="game-wrapper">
+        <canvas id="gameCanvas" width="600" height="200"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game Variables
+        let dino = { x: 50, y: 150, width: 20, height: 40, dy: 0, gravity: 0.6, jumpPower: -10, grounded: false };
+        let obstacles = [];
+        let frame = 0;
+        let score = 0;
+        let gameOver = false;
+        let nextSpawn = 60; // Frames until next obstacle
+
+        // Reset game state
+        function resetGame() {
+            dino.y = 150 - dino.height;
+            dino.dy = 0;
+            obstacles = [];
+            frame = 0;
+            score = 0;
+            gameOver = false;
+            nextSpawn = 60;
+            gameLoop();
+        }
+
+        // Jump logic
+        function jump() {
+            if (gameOver) {
+                resetGame();
+            } else if (dino.grounded) {
+                dino.dy = dino.jumpPower;
+                dino.grounded = false;
+            }
+        }
+
+        // Draw the player (Dino block)
+        function drawDino() {
+            ctx.fillStyle = '#555';
+            ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
+            
+            // Draw a little "eye"
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(dino.x + 12, dino.y + 5, 4, 4);
+        }
+
+        // Handle obstacles
+        function handleObstacles() {
+            // Spawn new obstacles
+            if (frame >= nextSpawn) {
+                let h = 20 + Math.random() * 25; // Random height
+                let w = 15 + Math.random() * 10; // Random width
+                obstacles.push({ x: canvas.width, y: 150 - h, width: w, height: h });
+                frame = 0;
+                nextSpawn = 50 + Math.random() * 70; // Randomize next spawn timing
+            }
+
+            for (let i = 0; i < obstacles.length; i++) {
+                let obs = obstacles[i];
+                obs.x -= 5 + (score / 500); // Speed increases as score goes up
+                
+                ctx.fillStyle = '#d9534f'; // Red cactus
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+                // Simple collision detection
+                if (dino.x < obs.x + obs.width &&
+                    dino.x + dino.width > obs.x &&
+                    dino.y < obs.y + obs.height &&
+                    dino.y + dino.height > obs.y) {
+                    gameOver = true;
+                }
+            }
+            // Remove off-screen obstacles
+            obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+        }
+
+        // Main game loop
+        function gameLoop() {
+            if (gameOver) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = '24px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Game Over! Score: ' + Math.floor(score), canvas.width / 2, canvas.height / 2 - 10);
+                ctx.font = '16px sans-serif';
+                ctx.fillText('Press Space or Tap to Restart', canvas.width / 2, canvas.height / 2 + 20);
+                return;
+            }
+
+            // Clear screen
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Ground line
+            ctx.beginPath();
+            ctx.moveTo(0, 150);
+            ctx.lineTo(canvas.width, 150);
+            ctx.strokeStyle = '#333';
+            ctx.stroke();
+
+            // Apply Gravity
+            dino.dy += dino.gravity;
+            dino.y += dino.dy;
+
+            // Stop at ground level
+            if (dino.y + dino.height >= 150) {
+                dino.y = 150 - dino.height;
+                dino.dy = 0;
+                dino.grounded = true;
+            }
+
+            drawDino();
+            handleObstacles();
+
+            // Update and draw score
+            score += 0.1;
+            ctx.fillStyle = '#333';
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('Score: ' + Math.floor(score), canvas.width - 20, 30);
+
+            frame++;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Event Listeners for jumping
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                e.preventDefault(); // Stop page scrolling
+                jump();
+            }
+        });
+        canvas.addEventListener('mousedown', jump);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            jump();
+        });
+
+        // Start the game
+        resetGame();
+    </script>
+</body>
+</html>
