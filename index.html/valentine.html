@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Love</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ffd1dc, #ffb7c5);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            color: #8a1c4a;
+        }
+
+        /* Valentine Gate */
+        .valentine-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd1dc, #ffb7c5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 110;
+            transition: opacity 0.5s ease;
+        }
+
+        .valentine-heart-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 110;
+            pointer-events: none;
+        }
+
+        .valentine-bg-heart {
+            position: fixed;
+            font-size: 420px;
+            line-height: 1;
+            top: -12%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.22;
+            z-index: 111;
+            pointer-events: none;
+        }
+
+        .valentine-card {
+            background: #fff;
+            width: min(92%, 480px);
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            animation: bounceIn 0.8s forwards;
+            z-index: 112;
+        }
+
+        .valentine-card h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 42px;
+            color: #d81b60;
+            margin-bottom: 22px;
+        }
+
+        .valentine-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .yes-btn, .no-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 11px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .yes-btn {
+            background: #d81b60;
+            color: #fff;
+        }
+
+        .no-btn {
+            background: #ffe3ea;
+            color: #b71550;
+        }
+
+        .yes-btn:hover, .no-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .no-gif {
+            position: fixed;
+            pointer-events: none;
+            z-index: 116;
+            transform: translate(-50%, -50%);
+            animation: gifFloat 3.4s ease-out forwards;
+            will-change: transform, opacity;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .valentine-floating-heart {
+            position: fixed;
+            bottom: -60px;
+            font-size: 28px;
+            color: #d81b60;
+            opacity: 0.9;
+            z-index: 111;
+            pointer-events: none;
+            animation: riseGate 4s linear forwards;
+        }
+        
+        /* Password Modal */
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 182, 193, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.5s ease;
+        }
+        
+        .password-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: bounceIn 1s forwards;
+        }
+        
+        .password-content h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #d81b60;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffb7c5;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .password-input:focus {
+            border-color: #d81b60;
+        }
+        
+        .submit-btn {
+            background: #d81b60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            background: #b71550;
+            transform: scale(1.05);
+        }
+        
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd1dc, #ffb7c5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99;
+            transition: opacity 0.8s ease;
+        }
+        
+        .welcome-message {
+            font-family: 'Dancing Script', cursive;
+            font-size: 48px;
+            color: #d81b60;
+            text-align: center;
+            animation: pulse 2s infinite, float 3s ease-in-out infinite;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Main Content */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            margin-top: 50px;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #d81b60;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-3px);
+        }
+        
+        .tab.active {
+            background: white;
+            color: #d81b60;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .content-area {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            min-height: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Love Letter Tab */
+        .letter {
+            padding: 20px;
+            background: #fff5f7;
+            border-radius: 15px;
+            border: 2px dashed #ffb7c5;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .letter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .letter h3 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            color: #d81b60;
+        }
+        
+        .letter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .letter.expanded .letter-content {
+            max-height: 500px;
+        }
+        
+        /* Music Tab */
+        .song {
+            background: #f8e8ee;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .song-icon {
+            font-size: 24px;
+            color: #d81b60;
+        }
+        
+        .song-info {
+            flex: 1;
+        }
+        
+        .song-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .song-info p {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .play-btn {
+            background: #d81b60;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .play-btn:hover {
+            background: #b71550;
+            transform: scale(1.05);
+        }
+        
+        .play-btn.playing {
+            background: #ff69b4;
+        }
+        
+        .play-icon {
+            font-size: 16px;
+        }
+        
+        /* Notes Tab */
+        .note {
+            background: #fce4ec;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #d81b60;
+        }
+        
+        /* Gallery Tab */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Decorative Elements */
+        .heart, .teddy-bear {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        
+        .heart {
+            color: #d81b60;
+            font-size: 24px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .teddy-bear {
+            font-size: 32px;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        /* Animations */
+        @keyframes bounceIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            60% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes riseGate {
+            0% { transform: translateY(0); opacity: 0.95; }
+            100% { transform: translateY(-110vh); opacity: 0; }
+        }
+
+        @keyframes gifFloat {
+            0% { transform: translate(-50%, -50%) translateY(12px) scale(0.88); opacity: 0; }
+            18% { transform: translate(-50%, -50%) translateY(0) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) translateY(-130px) scale(0.92); opacity: 0; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .welcome-message {
+                font-size: 36px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Valentine Gate -->
+    <div class="valentine-gate" id="valentineGate">
+        <canvas class="valentine-heart-canvas" id="valentineHeartCanvas"></canvas>
+        <div class="valentine-bg-heart">❤</div>
+        <div class="valentine-card">
+            <h2>Will you be my Valentine?</h2>
+            <div class="valentine-actions">
+                <button class="yes-btn" id="valentineYes">Yes</button>
+                <button class="no-btn" id="valentineNo">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-content">
+            <h2>Enter the secret code</h2>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Our special word...">
+            <button class="submit-btn" id="submitPassword">Enter</button>
+        </div>
+    </div>
+    
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <h1 class="welcome-message">Welcome my love, enjoy your stay</h1>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container" id="mainContent" style="display: none;">
+        <div class="tabs">
+            <button class="tab active" data-tab="love-letter">
+                <span>❤️</span> Love Letter
+            </button>
+            <button class="tab" data-tab="music">
+                <span>🎵</span> Music
+            </button>
+            <button class="tab" data-tab="notes">
+                <span>📝</span> Notes
+            </button>
+            <button class="tab" data-tab="gallery">
+                <span>🌷</span> Gallery
+            </button>
+        </div>
+        
+        <div class="content-area">
+            <!-- Love Letter Tab -->
+            <div class="tab-content active" id="love-letter">
+                <h2>My Dearest</h2>
+                <div class="letter" id="loveLetter">
+                    <div class="letter-header">
+                        <h3>A Letter For You</h3>
+                        <span>👇 Click to open</span>
+                    </div>
+                    <div class="letter-content">
+                        <p>My love,</p>
+                        <p>Every day with you feels like a beautiful dream that I never want to wake up from. Your smile brightens my darkest days, and your laughter is my favorite melody.</p>
+                        <p>I cherish every moment we spend together, from our silly inside jokes to our deep conversations under the stars. You've shown me what true happiness feels like, and I'm forever grateful to have you in my life.</p>
+                        <p>No matter where life takes us, always remember that my heart belongs to you.</p>
+                        <p>Forever yours,</p>
+                        <p>Me</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Music Tab -->
+            <div class="tab-content" id="music">
+                <h2>Songs that remind me of you</h2>
+                <div class="song">
+                    <div class="song-icon">🎵</div>
+                    <div class="song-info">
+                        <h4>Mystery Song #1</h4>
+                    </div>
+                    <button class="play-btn" data-song="0">
+                        <span class="play-icon">▶</span> Play
+                    </button>
+                    <audio class="song-audio" id="song0"></audio>
+                </div>
+                <div class="song">
+                    <div class="song-icon">🎵</div>
+                    <div class="song-info">
+                        <h4>Mystery Song #2</h4>
+                    </div>
+                    <button class="play-btn" data-song="1">
+                        <span class="play-icon">▶</span> Play
+                    </button>
+                    <audio class="song-audio" id="song1"></audio>
+                </div>
+                <div class="song">
+                    <div class="song-icon">🎵</div>
+                    <div class="song-info">
+                        <h4>Mystery Song #3</h4>
+                    </div>
+                    <button class="play-btn" data-song="2">
+                        <span class="play-icon">▶</span> Play
+                    </button>
+                    <audio class="song-audio" id="song2"></audio>
+                </div>
+            </div>
+
+            <!-- Notes Tab -->
+            <div class="tab-content" id="notes">
+                <h2>Some reminders</h2>
+                <div class="note">
+                    <p>My favorite hobby? Waiting 
+                        for you to finish your lecture so I can carry your bag. It’s honest work. 🎒❤️</p>
+                </div>
+                <div class="note">
+                    <p>Main perfect nahi hu, mujhe pata hai.
+                         Pr tujhe khush rakhne ki koshish mai aakhri saas tk karunga. Promise</p>
+                </div>
+                <div class="note">
+                    <p>You're mine.. always</p>
+                </div>
+            </div>
+            
+            <!-- Gallery Tab -->
+            <div class="tab-content" id="gallery">
+                <div class="gallery">
+                    <div class="gallery-item">
+                        <img src="1. Untitled.jpg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="10. Grrrrr.jpg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="13. Lace_Ankle_Socks.jpg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="14. Untitled.jpg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="18. Untitled.jpg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="19. her.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="heart" style="top: 10%; left: 5%;">❤️</div>
+    <div class="heart" style="top: 20%; right: 10%;">❤️</div>
+    <div class="heart" style="bottom: 15%; left: 15%;">❤️</div>
+    <div class="teddy-bear" style="top: 30%; left: 10%;">🧸</div>
+    <div class="teddy-bear" style="bottom: 10%; right: 5%;">🧸</div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const valentineGate = document.getElementById('valentineGate');
+            const valentineYes = document.getElementById('valentineYes');
+            const valentineNo = document.getElementById('valentineNo');
+            const valentineHeartCanvas = document.getElementById('valentineHeartCanvas');
+
+            // Password check
+            const passwordModal = document.getElementById('passwordModal');
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const mainContent = document.getElementById('mainContent');
+            const passwordInput = document.getElementById('passwordInput');
+            const submitPassword = document.getElementById('submitPassword');
+
+            // Start with only the Valentine gate visible
+            passwordModal.style.display = 'none';
+            welcomeScreen.style.display = 'none';
+            mainContent.style.display = 'none';
+
+            // Interactive heart animation on the home gate
+            const stopGateHeartAnimation = (function initGateHeartAnimation() {
+                const canvas = valentineHeartCanvas;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return function() {};
+
+                const range = n => Array.from(Array(n).keys());
+
+                class Vector {
+                    constructor(x = 0, y = 0) { this.x = x; this.y = y; }
+                    add(v) { return new Vector(this.x + v.x, this.y + v.y); }
+                    subtract(v) { return new Vector(this.x - v.x, this.y - v.y); }
+                    scale(s = 1) { return new Vector(this.x * s, this.y * s); }
+                }
+
+                class IO {
+                    constructor() {
+                        this.mouse = new Vector(window.innerWidth / 2, window.innerHeight / 2);
+                        this.bindMouse();
+                    }
+                    bindMouse() {
+                        window.addEventListener('mousemove', ({ clientX, clientY }) => {
+                            this.mouse.x = clientX;
+                            this.mouse.y = clientY;
+                        });
+                    }
+                }
+
+                class Point {
+                    constructor({ position = new Vector(), color = '#f00', size = 3 }) {
+                        this.position = position;
+                        this.color = color;
+                        this.size = size;
+                    }
+                    render(context) {
+                        context.beginPath();
+                        context.fillStyle = this.color;
+                        context.arc(this.position.x, this.position.y, this.size, 0, 2 * Math.PI);
+                        context.fill();
+                        context.closePath();
+                    }
+                }
+
+                class SpringPoint extends Point {
+                    constructor({ target = new Vector(), elasticity = 1e-1, color = 'rgba(255, 0, 0, .6)', size = 3, damping = 1e-1 }) {
+                        super({ position: target, color, size });
+                        this.velocity = new Vector();
+                        this.target = target;
+                        this.elasticity = elasticity;
+                        this.damping = damping;
+                    }
+                    updateVelocity() {
+                        const damping = this.velocity.scale(this.damping);
+                        const force = this.target.subtract(this.position).scale(this.elasticity).subtract(damping);
+                        this.velocity = this.velocity.add(force);
+                    }
+                    updatePosition() {
+                        this.position = this.position.add(this.velocity);
+                    }
+                    update() {
+                        this.updatePosition();
+                        this.updateVelocity();
+                    }
+                }
+
+                class SpringTrail extends SpringPoint {
+                    constructor(config) {
+                        super(config);
+                        this.trail = range(config.trailSize || 10).map(index => {
+                            const c = Object.assign({}, config);
+                            c.target = this.position;
+                            c.elasticity = 1 / (index * 8);
+                            c.damping = 8 / (index * 10 + 5);
+                            return new SpringPoint(c);
+                        });
+                    }
+                    update() {
+                        super.update();
+                        this.trail.forEach(point => point.update());
+                    }
+                    render(context) {
+                        super.render(context);
+                        this.trail.forEach(point => point.render(context));
+                    }
+                }
+
+                class Physics {
+                    update(objects) { objects.forEach(object => object.update()); }
+                }
+
+                class Renderer {
+                    constructor(context, size = { width: 100, height: 100 }) {
+                        this.ctx = context;
+                        this.size = size;
+                    }
+                    render(objects) { objects.forEach(object => object.render(this.ctx)); }
+                    clear() {
+                        this.ctx.fillStyle = 'rgba(255, 209, 220, 0.18)';
+                        this.ctx.fillRect(0, 0, this.size.width, this.size.height);
+                    }
+                }
+
+                class Engine {
+                    constructor(physics, renderer, objects = []) {
+                        this.physics = physics;
+                        this.renderer = renderer;
+                        this.objects = objects;
+                    }
+                    add(...objects) { this.objects = this.objects.concat(objects); }
+                    tick() { this.physics.update(this.objects); }
+                    render() { this.renderer.render(this.objects); }
+                    clear() { this.renderer.clear(); }
+                }
+
+                const io = new IO();
+                const engine = new Engine(new Physics(), new Renderer(ctx, { width: 100, height: 100 }));
+                let origin = new Vector(window.innerWidth / 2, window.innerHeight / 2);
+                let rafId = null;
+                let isRunning = true;
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    engine.renderer.size = { width: canvas.width, height: canvas.height };
+                    origin = new Vector(canvas.width / 2, canvas.height / 2);
+                }
+
+                const polar = (rad, time) => {
+                    const adjusted = rad + Math.sin(time / 100);
+                    const x = 16 * Math.sin(adjusted) ** 3;
+                    const y = 13 * Math.cos(adjusted) - 5 * Math.cos(2 * adjusted) - 2 * Math.cos(3 * adjusted) - Math.cos(4 * adjusted);
+                    const scale = (Math.sin(time / 10) + 3) * 4;
+                    return new Vector(x * scale, -y * scale).add(origin.add(io.mouse.subtract(origin).scale(0.5)));
+                };
+
+                const random = (min = 0, max = 1) => Math.random() * (max - min) + min;
+                const targetsSize = 60;
+                const targets = [];
+
+                for (let i = 0; i < targetsSize; i++) {
+                    const target = new Vector(random(0, window.innerWidth), random(0, window.innerHeight));
+                    engine.add(new SpringTrail({ target: target, size: 1.3, trailSize: 10, color: 'rgba(230, 10, 40, 0.85)' }));
+                    targets.push(target);
+                }
+
+                let time = 0;
+                function updateTargets() {
+                    for (let i = 0; i < targetsSize; i++) {
+                        const lerp = i / (targetsSize - 1) * Math.PI * 2 + random() / 10;
+                        const result = polar(lerp, time);
+                        targets[i].x = result.x;
+                        targets[i].y = result.y;
+
+                        if (random() < 0.004) {
+                            const rnd1 = Math.floor(random(0, targets.length));
+                            const rnd2 = Math.floor(random(0, targets.length));
+                            [targets[rnd1], targets[rnd2]] = [targets[rnd2], targets[rnd1]];
+                        }
+                    }
+                }
+
+                function animate() {
+                    if (!isRunning) return;
+                    time++;
+                    engine.clear();
+                    engine.tick();
+                    engine.render();
+                    updateTargets();
+                    rafId = window.requestAnimationFrame(animate);
+                }
+
+                window.addEventListener('resize', resizeCanvas);
+                resizeCanvas();
+                animate();
+
+                return function stopAnimation() {
+                    isRunning = false;
+                    if (rafId !== null) {
+                        window.cancelAnimationFrame(rafId);
+                    }
+                };
+            })();
+
+            // Home-page style floating hearts on the gate
+            const gateHeartInterval = setInterval(() => {
+                if (valentineGate.style.display === 'none') {
+                    clearInterval(gateHeartInterval);
+                    return;
+                }
+                const heart = document.createElement('div');
+                heart.className = 'valentine-floating-heart';
+                heart.textContent = '❤';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (3 + Math.random() * 2) + 's';
+                valentineGate.appendChild(heart);
+                setTimeout(() => heart.remove(), 4500);
+            }, 280);
+
+            valentineYes.addEventListener('click', function() {
+                valentineGate.style.opacity = '0';
+                setTimeout(() => {
+                    valentineGate.style.display = 'none';
+                    stopGateHeartAnimation();
+                    passwordModal.style.display = 'flex';
+                }, 500);
+            });
+
+            valentineNo.addEventListener('click', function() {
+                for (let i = 0; i < 5; i++) {
+                    const gif = document.createElement('img');
+                    gif.className = 'no-gif';
+                    gif.src = 'giphy.gif';
+                    gif.alt = 'Please say yes';
+                    document.body.appendChild(gif);
+
+                    gif.onload = function() {
+                        const maxWidth = Math.min(240, window.innerWidth * 0.35);
+                        const minWidth = Math.min(110, maxWidth);
+                        const width = minWidth + Math.random() * (maxWidth - minWidth);
+                        const ratio = (gif.naturalHeight || 1) / (gif.naturalWidth || 1);
+                        const height = width * ratio;
+
+                        gif.style.width = width + 'px';
+                        gif.style.height = 'auto';
+
+                        const halfW = width / 2;
+                        const halfH = height / 2;
+                        const minX = Math.max(halfW, 8);
+                        const maxX = Math.max(window.innerWidth - halfW, minX + 1);
+                        const minY = Math.max(halfH, 8);
+                        const maxY = Math.max(window.innerHeight - halfH, minY + 1);
+
+                        gif.style.left = (minX + Math.random() * (maxX - minX)) + 'px';
+                        gif.style.top = (minY + Math.random() * (maxY - minY)) + 'px';
+                    };
+                    if (gif.complete) {
+                        gif.onload();
+                    }
+
+                    setTimeout(() => {
+                        gif.remove();
+                    }, 3200 + Math.random() * 900);
+                }
+            });
+            
+            submitPassword.addEventListener('click', function() {
+                if (passwordInput.value.toLowerCase() === 'inorbit20') {
+                    passwordModal.style.opacity = '0';
+                    setTimeout(() => {
+                        passwordModal.style.display = 'none';
+                        welcomeScreen.style.display = 'flex';
+                        
+                        setTimeout(() => {
+                            welcomeScreen.style.opacity = '0';
+                            setTimeout(() => {
+                                welcomeScreen.style.display = 'none';
+                                mainContent.style.display = 'block';
+                            }, 800);
+                        }, 2500);
+                    }, 500);
+                } else {
+                    passwordInput.value = '';
+                    passwordInput.placeholder = 'Try again, my love...';
+                    passwordInput.style.borderColor = '#ff4d4d';
+                    setTimeout(() => {
+                        passwordInput.style.borderColor = '#ffb7c5';
+                        passwordInput.placeholder = 'Our special word...';
+                    }, 1500);
+                }
+            });
+            
+            // Allow Enter key to submit password
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitPassword.click();
+                }
+            });
+            
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');    
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === targetTab) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Expandable love letter
+            const loveLetter = document.getElementById('loveLetter');
+            loveLetter.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+            });
+            
+            // Music player functionality
+            const playButtons = document.querySelectorAll('.play-btn');
+            const audioElements = document.querySelectorAll('.song-audio');
+            
+            // Song URLs - Update these with your actual song URLs
+            const songUrls = [
+                'music.mp3',  // Replace with actual Hiwaga song URL
+                'musicc.mp3',     // Replace with actual Wish song URL
+                'darkred.mp3'    // Replace with actual third song URL
+            ];
+            
+            // Set audio sources
+            audioElements.forEach((audio, index) => {
+                audio.src = songUrls[index];
+            });
+            
+            playButtons.forEach((btn, index) => {
+                btn.addEventListener('click', function() {
+                    const audio = audioElements[index];
+                    
+                    // Stop all other songs
+                    audioElements.forEach((a, i) => {
+                        if (i !== index) {
+                            a.pause();
+                            a.currentTime = 0;
+                            playButtons[i].classList.remove('playing');
+                            playButtons[i].innerHTML = '<span class="play-icon">▶</span> Play';
+                        }
+                    });
+                    
+                    // Toggle play/pause for current song
+                    if (audio.paused) {
+                        audio.play();
+                        btn.classList.add('playing');
+                        btn.innerHTML = '<span class="play-icon">⏸</span> Pause';
+                    } else {
+                        audio.pause();
+                        btn.classList.remove('playing');
+                        btn.innerHTML = '<span class="play-icon">▶</span> Play';
+                    }
+                });
+                
+                // Update button when song ends
+                audioElements[index].addEventListener('ended', function() {
+                    btn.classList.remove('playing');
+                    btn.innerHTML = '<span class="play-icon">▶</span> Play';
+                });
+            });
+            
+            // Add floating decorative elements
+            function addFloatingElements() {
+                for (let i = 0; i < 15; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = Math.random() * 100 + '%';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    document.body.appendChild(heart);
+                }
+                
+                for (let i = 0; i < 5; i++) {
+                    const teddy = document.createElement('div');
+                    teddy.classList.add('teddy-bear');
+                    teddy.innerHTML = '🧸';
+                    teddy.style.left = Math.random() * 100 + '%';
+                    teddy.style.top = Math.random() * 100 + '%';
+                    teddy.style.animationDelay = Math.random() * 5 + 's';
+                    document.body.appendChild(teddy);
+                }
+            }
+            
+            addFloatingElements();
+        });
+    </script>
+</body>
+</html>
