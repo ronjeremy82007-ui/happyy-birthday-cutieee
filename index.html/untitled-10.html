@@ -583,11 +583,17 @@
     async function loadDiary() {
       if (!currentUser) return;
 
-      const { data: entries } = await sb
+      const { data: entries, error } = await sb
         .from("diary")
         .select("*")
         .eq("user_id", currentUser.id)
         .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Failed to load diary entries:", error);
+        alert("Could not load diary entries: " + (error.message || "Unknown error"));
+        return;
+      }
 
       const list = $("diaryList");
       list.innerHTML = "";
@@ -628,13 +634,19 @@
       const body  = $("diaryBody").value.trim();
       if (!body) return;
 
-      await sb
+      const { error } = await sb
         .from("diary")
         .insert({
           user_id: currentUser.id,
           title,
           body,
         });
+
+      if (error) {
+        console.error("Failed to save diary entry:", error);
+        alert("Could not save diary entry: " + (error.message || "Unknown error"));
+        return;
+      }
 
       $("diaryTitle").value = "";
       $("diaryBody").value  = "";
@@ -660,11 +672,17 @@
       const body  = $("editDiaryBody").value.trim();
       if (!body) return;
 
-      await sb
+      const { error } = await sb
         .from("diary")
         .update({ title, body, updated_at: new Date().toISOString() })
         .eq("id", editingDiaryId)
         .eq("user_id", currentUser.id);
+
+      if (error) {
+        console.error("Failed to update diary entry:", error);
+        alert("Could not update diary entry: " + (error.message || "Unknown error"));
+        return;
+      }
 
       closeDiaryModal();
       loadDiary();
@@ -673,11 +691,17 @@
     window.deleteEditingDiary = async () => {
       if (!editingDiaryId || !currentUser) return;
 
-      await sb
+      const { error } = await sb
         .from("diary")
         .delete()
         .eq("id", editingDiaryId)
         .eq("user_id", currentUser.id);
+
+      if (error) {
+        console.error("Failed to delete diary entry:", error);
+        alert("Could not delete diary entry: " + (error.message || "Unknown error"));
+        return;
+      }
 
       closeDiaryModal();
       loadDiary();
