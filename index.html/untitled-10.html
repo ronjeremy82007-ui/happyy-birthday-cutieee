@@ -36,7 +36,29 @@
   <style>
     body { 
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #fff0f3 0%, #ffe6f0 50%, #ffd4e5 100%);
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-image: url('./ourspace.jpg');
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 240, 243, 0.70) 0%, rgba(255, 230, 240, 0.70) 50%, rgba(255, 212, 229, 0.70) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    #dashboard {
+      position: relative;
+      z-index: 1;
     }
     .modal-backdrop { background: rgba(255,255,255,.85); backdrop-filter: blur(8px); }
     input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #ffffff inset !important; -webkit-text-fill-color: #4a4a4a !important; }
