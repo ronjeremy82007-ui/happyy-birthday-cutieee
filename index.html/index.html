@@ -361,12 +361,15 @@
             color: #c41e6d;
             font-size: 15px;
             line-height: 2;
-            max-width: 380px;
+            width: 90%;
+            max-width: 400px;
+            margin: 60px auto 0 auto;
             background: linear-gradient(135deg, rgba(255, 192, 203, 0.1), rgba(255, 182, 193, 0.15));
             padding: 25px;
             border-radius: 20px;
             border: 1.5px solid rgba(255, 107, 153, 0.2);
             box-shadow: 0 8px 30px rgba(255, 107, 153, 0.1);
+            box-sizing: border-box;
         }
 
         .hidden-secret.reveal {
@@ -423,30 +426,6 @@
             color: #888;
             font-size: 13px;
             margin: 0 0 16px;
-        }
-
-        .auth-toggle {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            border: 1px solid rgba(255, 182, 193, 0.6);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 14px;
-        }
-
-        .auth-tab {
-            border: none;
-            padding: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            background: transparent;
-            color: #888;
-        }
-
-        .auth-tab.active {
-            background: #d6336c;
-            color: #fff;
         }
 
         .auth-form {
@@ -557,24 +536,12 @@
     <div id="authGate" class="auth-overlay">
         <div class="auth-card">
             <h2 class="auth-title"> Welcome Cutie💕</h2>
-            <p class="auth-subtitle">Login to enter OUR WORLD</p>
-
-            <div class="auth-toggle">
-                <button id="authTabLogin" class="auth-tab active" onclick="showHomeAuthTab('login')">Login</button>
-                <button id="authTabSignup" class="auth-tab" onclick="showHomeAuthTab('signup')">Sign Up</button>
-            </div>
+            <p class="auth-subtitle">Enter your credentials to access OUR WORLD</p>
 
             <form id="homeLoginForm" class="auth-form" onsubmit="handleHomeLogin(event)">
                 <input id="homeLoginEmail" type="email" required placeholder="Your email">
                 <input id="homeLoginPass" type="password" required minlength="6" placeholder="Password">
                 <button class="auth-submit" type="submit">Login</button>
-            </form>
-
-            <form id="homeSignupForm" class="auth-form hidden" onsubmit="handleHomeSignup(event)">
-                <input id="homeSignupEmail" type="email" required placeholder="Your email">
-                <input id="homeSignupPass" type="password" required minlength="6" placeholder="Password (min 6 chars)">
-                <input id="homeSignupPass2" type="password" required minlength="6" placeholder="Confirm Password">
-                <button class="auth-submit" type="submit">Create Account</button>
             </form>
 
             <p id="homeAuthError" class="auth-error"></p>
@@ -654,16 +621,21 @@
     <h3 style="font-size: 16px; margin: 5px 0; color: #d6336c; text-align: center;">Our Space</h3>
     <p style="font-size: small; text-align: center;">Calendar • Wallet • Diary 💞</p>
 </div>
+        <div style="height: fit-content; grid-column: 1 / -1;" class="card" onclick="window.location.href='valentine.html'">
+    <div class="card-icon" style="font-size: x-large;">😭</div>
+    <h3 style="font-size: 16px; margin: 5px 0; color: #d6336c; text-align: center;">our first valentine</h3>
+    <p style="font-size: small; text-align: center;">...</p>
+</div>
 
+    </div>
 
-    <div id="secret-reveal" class="hidden-secret" style="width: 380px; text-align: center;">
+    <div id="secret-reveal" class="hidden-secret" style="text-align: center;">
         <p>I built this app because a regular text just isn't enough to show how much you mean to me. Happy Birthday, my girl
         <br> <b style="font-family: 'Playfair Display', serif; margin-top: 10px;
         color: #d6336c;">
              P.S. I'm still counting down the seconds until our next date.</b>   ⏳❤️</p>
         <span class="designer-credit">Designed with ❤️ by GAWAR 😭 🎀</span>
     </div>
-</footer>
 
     </div>
 
@@ -672,6 +644,13 @@
 const HOME_SUPABASE_URL = "https://zifaparcurgoxjjhgvkg.supabase.co";
 const HOME_SUPABASE_KEY = "sb_publishable_DUbpC_Kmk5pVHz1mJWrpEg_GMLoPH8s";
 const homeSb = window.supabase.createClient(HOME_SUPABASE_URL, HOME_SUPABASE_KEY);
+
+// ========== ACCESS CONTROL: MODIFY THIS TO ADD ALLOWED USERS ==========
+// Add email addresses of users who are allowed to access this site
+const ALLOWED_EMAILS = [
+    "aryanxragini@gmail.com",  // Replace with actual email
+    "birthday.girl@example.com"  // Add more emails here as needed
+];
 
 function setHomeAuthError(message, isSuccess = false) {
     const errorEl = document.getElementById('homeAuthError');
@@ -684,51 +663,30 @@ function setHomeAuthState(isLoggedIn) {
     document.getElementById('homeContent').style.display = isLoggedIn ? 'block' : 'none';
 }
 
-function showHomeAuthTab(tab) {
-    const isLogin = tab === 'login';
-    document.getElementById('homeLoginForm').classList.toggle('hidden', !isLogin);
-    document.getElementById('homeSignupForm').classList.toggle('hidden', isLogin);
-    document.getElementById('authTabLogin').classList.toggle('active', isLogin);
-    document.getElementById('authTabSignup').classList.toggle('active', !isLogin);
-    setHomeAuthError('');
-}
-
 async function handleHomeLogin(event) {
     event.preventDefault();
     setHomeAuthError('');
 
+    const email = document.getElementById('homeLoginEmail').value.trim().toLowerCase();
+    const password = document.getElementById('homeLoginPass').value;
+
+    // Check if email is in allowed list
+    if (!ALLOWED_EMAILS.includes(email)) {
+        setHomeAuthError('Access denied. You are not authorized to access this site.');
+        document.getElementById('homeLoginEmail').value = '';
+        document.getElementById('homeLoginPass').value = '';
+        return;
+    }
+
     const { error } = await homeSb.auth.signInWithPassword({
-        email: document.getElementById('homeLoginEmail').value.trim(),
-        password: document.getElementById('homeLoginPass').value,
+        email: email,
+        password: password,
     });
 
     if (error) {
         setHomeAuthError(error.message);
+        document.getElementById('homeLoginPass').value = '';
     }
-}
-
-async function handleHomeSignup(event) {
-    event.preventDefault();
-    setHomeAuthError('');
-
-    const pass = document.getElementById('homeSignupPass').value;
-    const pass2 = document.getElementById('homeSignupPass2').value;
-    if (pass !== pass2) {
-        setHomeAuthError('Passwords do not match.');
-        return;
-    }
-
-    const { error } = await homeSb.auth.signUp({
-        email: document.getElementById('homeSignupEmail').value.trim(),
-        password: pass,
-    });
-
-    if (error) {
-        setHomeAuthError(error.message);
-        return;
-    }
-
-    setHomeAuthError('Account created. If email confirmation is enabled, please verify first.', true);
 }
 
 async function handleHomeLogout() {
